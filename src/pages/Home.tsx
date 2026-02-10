@@ -16,24 +16,35 @@ export default function Home() {
       transition={{ duration: 0.4, ease: "easeOut" }}
       sx={{
         width: "100%",
+        maxWidth: "100vw",
         bgcolor: "background.default",
         minHeight: "100vh",
-        px: 4,
-        py: 3,
+        px: { xs: 2, sm: 3, md: 4 },
+        py: { xs: 2, sm: 3 },
+        overflowX: "hidden",
       }}
     >
       <PageHeader />
 
-      <Box component="main" sx={{ mt: 4 }}>
+      <Box
+        component="main"
+        sx={{
+          mt: { xs: 2, sm: 3, md: 4 },
+          width: "100%",
+          maxWidth: "100%",
+        }}
+      >
         <MotionBox
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
           sx={{
             display: "flex",
-            alignItems: "center",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "flex-start", sm: "center" },
             justifyContent: "space-between",
-            mb: 3,
+            gap: { xs: 2, sm: 0 },
+            mb: { xs: 2, sm: 3 },
           }}
         >
           <Typography
@@ -42,6 +53,7 @@ export default function Home() {
             sx={{
               fontWeight: 700,
               color: "text.primary",
+              fontSize: { xs: "1.5rem", sm: "2rem", md: "2.125rem" },
             }}
           >
             Colaboradores
@@ -50,18 +62,16 @@ export default function Home() {
             variant="contained"
             color="primary"
             onClick={() => navigate("/colaboradores/novo")}
+            fullWidth
+            sx={{
+              width: { xs: "100%", sm: "auto" },
+            }}
           >
             Novo Colaborador
           </Button>
         </MotionBox>
 
-        <MotionBox
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
-        >
-          <CollaboratorsList collaborators={collaboratorsMock} />
-        </MotionBox>
+        <CollaboratorsList collaborators={collaboratorsMock} />
       </Box>
     </MotionBox>
   );

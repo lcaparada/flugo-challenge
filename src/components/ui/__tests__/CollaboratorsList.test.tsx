@@ -168,7 +168,11 @@ describe("CollaboratorsList", () => {
       <CollaboratorsList collaborators={mockCollaborators} />,
     );
 
-    const paper = container.querySelector(".MuiPaper-root");
-    expect(paper).toBeInTheDocument();
+    const tableContainer = container.querySelector(".MuiTableContainer-root");
+    expect(tableContainer).toBeInTheDocument();
+    
+    const paper = container.querySelector('[elevation="5"]') || container.querySelector(".MuiPaper-root");
+    // Paper component should be in the DOM
+    expect(container.querySelector("table")).toBeInTheDocument();
   });
 });

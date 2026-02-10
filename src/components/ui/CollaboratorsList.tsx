@@ -6,7 +6,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
@@ -79,11 +78,12 @@ export function CollaboratorsList({ collaborators }: CollaboratorsListProps) {
 
   return (
     <TableContainer
-      component={Paper}
-      elevation={5}
       sx={{
-        borderRadius: 2,
-        overflow: "hidden",
+        borderWidth: 1,
+        borderColor: "divider",
+        borderStyle: "solid",
+        borderRadius: 4,
+        boxShadow: "5px 3px 12px -9px #000000",
       }}
     >
       <Table>
@@ -92,7 +92,13 @@ export function CollaboratorsList({ collaborators }: CollaboratorsListProps) {
             {headCells.map((headCell) => (
               <TableCell
                 key={headCell.id}
-                sx={{ fontWeight: 600, color: "grey.500" }}
+                sx={{
+                  fontWeight: 600,
+                  color: "grey.500",
+                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                  px: { xs: 1, sm: 2 },
+                  py: { xs: 1.5, sm: 2 },
+                }}
                 sortDirection={orderBy === headCell.id ? order : false}
               >
                 {headCell.sortable ? (
@@ -138,34 +144,66 @@ export function CollaboratorsList({ collaborators }: CollaboratorsListProps) {
         </TableHead>
         <TableBody>
           {sortedCollaborators.map((collaborator) => (
-            <TableRow key={collaborator.id}>
-              <TableCell>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+            <TableRow
+              key={collaborator.id}
+              sx={{
+                "&:hover": {
+                  backgroundColor: "action.hover",
+                },
+              }}
+            >
+              <TableCell sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1.5, sm: 2 } }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: { xs: 1, sm: 1.5 },
+                  }}
+                >
                   <Avatar
                     {...stringAvatar(collaborator.name)}
                     src={collaborator.avatarUrl}
                     alt={collaborator.name}
                     sx={{
                       ...stringAvatar(collaborator.name).sx,
-                      width: 32,
-                      height: 32,
+                      width: { xs: 28, sm: 32 },
+                      height: { xs: 28, sm: 32 },
+                      fontSize: { xs: "0.75rem", sm: "0.875rem" },
                     }}
                   />
-                  <span style={{ fontWeight: 500 }}>{collaborator.name}</span>
+                  <span style={{ fontWeight: 500, fontSize: "inherit" }}>
+                    {collaborator.name}
+                  </span>
                 </Box>
               </TableCell>
-              <TableCell sx={{ color: "grey.500" }}>
+              <TableCell
+                sx={{
+                  color: "grey.500",
+                  px: { xs: 1, sm: 2 },
+                  py: { xs: 1.5, sm: 2 },
+                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                }}
+              >
                 {collaborator.email}
               </TableCell>
-              <TableCell sx={{ color: "grey.500" }}>
+              <TableCell
+                sx={{
+                  color: "grey.500",
+                  px: { xs: 1, sm: 2 },
+                  py: { xs: 1.5, sm: 2 },
+                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                }}
+              >
                 {collaborator.department}
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1.5, sm: 2 } }}>
                 <Chip
                   label={collaborator.isActive ? "Ativo" : "Inativo"}
                   size="small"
                   sx={{
                     fontWeight: 500,
+                    fontSize: { xs: "0.625rem", sm: "0.75rem" },
+                    height: { xs: 20, sm: 24 },
                     backgroundColor: collaborator.isActive
                       ? "success.light"
                       : "error.light",

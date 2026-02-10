@@ -91,12 +91,12 @@ export default function CreateCollaborator() {
         width: "100%",
         bgcolor: "background.default",
         minHeight: "100vh",
-        px: 4,
-        py: 3,
+        px: { xs: 2, sm: 3, md: 4 },
+        py: { xs: 2, sm: 3 },
       }}
     >
       <PageHeader />
-      <Breadcrumbs sx={{ mb: 3 }}>
+      <Breadcrumbs sx={{ mb: { xs: 2, sm: 3 }, fontSize: { xs: "0.875rem", sm: "1rem" } }}>
         <Link
           underline="hover"
           color="inherit"
@@ -112,8 +112,8 @@ export default function CreateCollaborator() {
         <Typography color="text.primary">Cadastrar Colaborador</Typography>
       </Breadcrumbs>
 
-      <Box sx={{ mr: 12 }}>
-        <Box sx={{ mb: 3 }}>
+      <Box sx={{ mr: { xs: 0, lg: 12 } }}>
+        <Box sx={{ mb: { xs: 2, sm: 3 } }}>
           <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
             <Typography variant="body2" color="text.secondary">
               {Math.round(progress)}%
@@ -134,8 +134,8 @@ export default function CreateCollaborator() {
           />
         </Box>
 
-        <Box sx={{ display: "flex", gap: 4 }}>
-          <Box sx={{ width: 240 }}>
+        <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: { xs: 3, md: 4 } }}>
+          <Box sx={{ width: { xs: "100%", md: 240 }, display: { xs: "none", md: "block" } }}>
             <Stepper activeStep={activeStep} orientation="vertical">
               {steps.map((label, index) => (
                 <Step key={label}>
@@ -154,10 +154,15 @@ export default function CreateCollaborator() {
             </Stepper>
           </Box>
 
-          <Box sx={{ flex: 1 }}>
+          <Box sx={{ flex: 1, width: { xs: "100%", md: "auto" } }}>
             <Typography
               variant="h5"
-              sx={{ mb: 4, fontWeight: 600, color: "text.primary" }}
+              sx={{
+                mb: { xs: 3, sm: 4 },
+                fontWeight: 600,
+                color: "text.primary",
+                fontSize: { xs: "1.25rem", sm: "1.5rem" },
+              }}
             >
               {steps[activeStep]}
             </Typography>
@@ -229,15 +234,19 @@ export default function CreateCollaborator() {
             <Box
               sx={{
                 display: "flex",
+                flexDirection: { xs: "column-reverse", sm: "row" },
                 justifyContent: "space-between",
-                mt: 4,
+                gap: { xs: 2, sm: 0 },
+                mt: { xs: 3, sm: 4 },
               }}
             >
               <Button
                 onClick={handleBack}
                 variant="text"
                 color="secondary"
+                fullWidth
                 sx={{
+                  width: { xs: "100%", sm: "auto" },
                   borderRadius: 2,
                   textTransform: "none",
                   fontWeight: 600,
@@ -251,7 +260,9 @@ export default function CreateCollaborator() {
                 onClick={handleNext}
                 variant="contained"
                 color="primary"
+                fullWidth
                 sx={{
+                  width: { xs: "100%", sm: "auto" },
                   borderRadius: 2,
                   textTransform: "none",
                   fontWeight: 600,

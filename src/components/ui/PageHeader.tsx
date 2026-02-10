@@ -9,10 +9,17 @@ export function PageHeader() {
         alignItems: "flex-end",
         justifyContent: "flex-end",
         width: "100%",
-        mb: 4,
+        mb: { xs: 2, sm: 3, md: 4 },
       }}
     >
-      <Avatar alt="User" src="/static/images/avatar/1.jpg" />
+      <Avatar
+        alt="User"
+        src="/static/images/avatar/1.jpg"
+        sx={{
+          width: { xs: 32, sm: 40 },
+          height: { xs: 32, sm: 40 },
+        }}
+      />
     </Box>
   );
 }

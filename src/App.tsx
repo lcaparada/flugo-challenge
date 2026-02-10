@@ -17,6 +17,7 @@ export default function App() {
           sx={{
             display: "flex",
             minHeight: "100vh",
+            overflow: "hidden",
           }}
         >
           <MenuButton onClick={() => setIsSidebarOpen(true)} />
@@ -28,6 +29,9 @@ export default function App() {
             component="main"
             sx={{
               flex: 1,
+              overflow: "hidden",
+              width: "100%",
+              maxWidth: "100%",
             }}
           >
             <Routes>
