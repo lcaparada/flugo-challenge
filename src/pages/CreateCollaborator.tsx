@@ -1,41 +1,71 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Box,
   Button,
-  TextField,
-  Switch,
-  FormControlLabel,
   Typography,
   Stepper,
   Step,
   StepLabel,
-  Paper,
   Breadcrumbs,
   Link,
   LinearProgress,
 } from "@mui/material";
-import { PageHeader } from "@/components";
-import type { CollaboratorFormData } from "@/types/collaboratorForm";
-import { initialFormData } from "@/types/collaboratorForm";
+import { InputForm, PageHeader, SwitchForm } from "@/components";
+import SelectForm from "@/components/form/select.form";
+import {
+  createCollaboratorSchema,
+  type CreateCollaboratorSchema,
+} from "@/schemas";
 
-const steps = ["Infos Básicas", "Infos Profissionais"];
+const steps = ["Informações Básicas", "Infos Profissionais"];
+
+const departmentOptions = [
+  { value: "design", label: "Design" },
+  { value: "engineering", label: "Engineering" },
+  { value: "product", label: "Product" },
+  { value: "marketing", label: "Marketing" },
+  { value: "sales", label: "Sales" },
+  { value: "hr", label: "HR" },
+];
 
 export default function CreateCollaborator() {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
-  const [formData, setFormData] =
-    useState<CollaboratorFormData>(initialFormData);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    trigger,
+  } = useForm<CreateCollaboratorSchema>({
+    resolver: zodResolver(createCollaboratorSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      isActive: true,
+      department: "",
+    },
+    mode: "onChange",
+  });
 
   const progress = ((activeStep + 1) / steps.length) * 100;
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    const fieldsToValidate: Array<keyof CreateCollaboratorSchema> =
+      activeStep === 0 ? ["name", "email", "isActive"] : ["department"];
+
+    const isValid = await trigger(fieldsToValidate);
+
+    if (!isValid) return;
+
     if (activeStep < steps.length - 1) {
       setActiveStep((prev) => prev + 1);
     } else {
-      console.log("Form data:", formData);
-      navigate("/");
+      handleSubmit(onSubmit)();
     }
   };
 
@@ -47,23 +77,10 @@ export default function CreateCollaborator() {
     }
   };
 
-  const handleChange =
-    (field: keyof CollaboratorFormData) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: event.target.value,
-      }));
-    };
-
-  const handleSwitchChange =
-    (field: keyof CollaboratorFormData) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: event.target.checked,
-      }));
-    };
+  const onSubmit = (data: CreateCollaboratorSchema) => {
+    console.log("Form submitted:", data);
+    navigate("/");
+  };
 
   return (
     <motion.div
@@ -73,7 +90,6 @@ export default function CreateCollaborator() {
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <PageHeader />
-
       <Breadcrumbs sx={{ mb: 3 }}>
         <Link
           underline="hover"
@@ -90,57 +106,49 @@ export default function CreateCollaborator() {
         <Typography color="text.primary">Cadastrar Colaborador</Typography>
       </Breadcrumbs>
 
-      <Box sx={{ mb: 3 }}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          <Typography variant="body2" color="text.secondary">
-            {Math.round(progress)}%
-          </Typography>
-        </Box>
-        <LinearProgress
-          variant="determinate"
-          value={progress}
-          sx={{
-            height: 6,
-            borderRadius: 3,
-            backgroundColor: "grey.100",
-            "& .MuiLinearProgress-bar": {
-              borderRadius: 3,
-              backgroundColor: "primary.main",
-            },
-          }}
-        />
-      </Box>
-
-      <Box sx={{ display: "flex", gap: 4 }}>
-        <Box sx={{ width: 240 }}>
-          <Stepper activeStep={activeStep} orientation="vertical">
-            {steps.map((label, index) => (
-              <Step key={label}>
-                <StepLabel
-                  sx={{
-                    "& .MuiStepLabel-label": {
-                      fontSize: "1rem",
-                      fontWeight: index === activeStep ? 600 : 400,
-                    },
-                  }}
-                >
-                  {label}
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-        </Box>
-
-        <Box sx={{ flex: 1 }}>
-          <Paper
-            elevation={0}
+      <Box sx={{ mr: 12 }}>
+        <Box sx={{ mb: 3 }}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+            <Typography variant="body2" color="text.secondary">
+              {Math.round(progress)}%
+            </Typography>
+          </Box>
+          <LinearProgress
+            variant="determinate"
+            value={progress}
             sx={{
-              p: 4,
-              borderRadius: 2,
-              border: "1px solid",
-              borderColor: "grey.100",
+              height: 6,
+              borderRadius: 3,
+              backgroundColor: "grey.100",
+              "& .MuiLinearProgress-bar": {
+                borderRadius: 3,
+                backgroundColor: "primary.main",
+              },
             }}
-          >
+          />
+        </Box>
+
+        <Box sx={{ display: "flex", gap: 4 }}>
+          <Box sx={{ width: 240 }}>
+            <Stepper activeStep={activeStep} orientation="vertical">
+              {steps.map((label, index) => (
+                <Step key={label}>
+                  <StepLabel
+                    sx={{
+                      "& .MuiStepLabel-label": {
+                        fontSize: "1rem",
+                        fontWeight: index === activeStep ? 600 : 400,
+                      },
+                    }}
+                  >
+                    {label}
+                  </StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Box>
+
+          <Box sx={{ flex: 1 }}>
             <Typography
               variant="h5"
               sx={{ mb: 4, fontWeight: 600, color: "text.primary" }}
@@ -160,43 +168,28 @@ export default function CreateCollaborator() {
                   <Box
                     sx={{ display: "flex", flexDirection: "column", gap: 3 }}
                   >
-                    <TextField
+                    <InputForm
+                      name="name"
+                      control={control}
                       label="Título"
-                      value={formData.name}
-                      onChange={handleChange("name")}
-                      fullWidth
-                      variant="outlined"
                       placeholder="João da Silva"
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
+                      error={!!errors.name}
+                      helperText={errors.name?.message}
                     />
 
-                    <TextField
+                    <InputForm
+                      name="email"
+                      control={control}
                       label="E-mail"
                       type="email"
-                      value={formData.email}
-                      onChange={handleChange("email")}
-                      fullWidth
-                      variant="outlined"
                       placeholder="e.g. john@gmail.com"
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
+                      error={!!errors.email}
+                      helperText={errors.email?.message}
                     />
 
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={formData.isActive}
-                          onChange={handleSwitchChange("isActive")}
-                          color="primary"
-                        />
-                      }
+                    <SwitchForm
+                      name="isActive"
+                      control={control}
                       label="Ativar ao criar"
                     />
                   </Box>
@@ -214,63 +207,13 @@ export default function CreateCollaborator() {
                   <Box
                     sx={{ display: "flex", flexDirection: "column", gap: 3 }}
                   >
-                    <TextField
+                    <SelectForm
+                      name="department"
+                      control={control}
                       label="Departamento"
-                      value={formData.department}
-                      onChange={handleChange("department")}
-                      fullWidth
-                      variant="outlined"
-                      placeholder="e.g. Design"
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
-                    />
-
-                    <TextField
-                      label="Cargo"
-                      value={formData.role}
-                      onChange={handleChange("role")}
-                      fullWidth
-                      variant="outlined"
-                      placeholder="e.g. Designer Senior"
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
-                    />
-
-                    <TextField
-                      label="Salário"
-                      value={formData.salary}
-                      onChange={handleChange("salary")}
-                      fullWidth
-                      variant="outlined"
-                      placeholder="e.g. R$ 5.000,00"
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
-                    />
-
-                    <TextField
-                      label="Data de Início"
-                      type="date"
-                      value={formData.startDate}
-                      onChange={handleChange("startDate")}
-                      fullWidth
-                      variant="outlined"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
+                      options={departmentOptions}
+                      error={!!errors.department}
+                      helperText={errors.department?.message}
                     />
                   </Box>
                 </motion.div>
@@ -286,7 +229,7 @@ export default function CreateCollaborator() {
             >
               <Button
                 onClick={handleBack}
-                variant="outlined"
+                variant="text"
                 color="secondary"
                 sx={{
                   borderRadius: 2,
@@ -312,7 +255,7 @@ export default function CreateCollaborator() {
                 {activeStep === steps.length - 1 ? "Finalizar" : "Próximo"}
               </Button>
             </Box>
-          </Paper>
+          </Box>
         </Box>
       </Box>
     </motion.div>
