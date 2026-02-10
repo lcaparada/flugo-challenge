@@ -36,14 +36,4 @@ describe("Sidebar", () => {
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "/");
   });
-
-  it("applies expected layout classes to the nav", () => {
-    renderSidebar();
-    const nav = screen.getByRole("navigation");
-    expect(nav).toHaveClass(
-      "bg-sidebar-bg",
-      "border-sidebar-border",
-      "min-h-screen",
-    );
-  });
 });

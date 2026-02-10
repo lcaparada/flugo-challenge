@@ -20,11 +20,4 @@ describe("SidebarLogo", () => {
     const logo = screen.getByRole("img", { name: /logo/i });
     expect(logo).toHaveAttribute("alt", "logo");
   });
-
-  it("applies cursor-pointer class to the container", () => {
-    render(<SidebarLogo />);
-    const logo = screen.getByRole("img", { name: /logo/i });
-    const container = logo.parentElement;
-    expect(container).toHaveClass("cursor-pointer");
-  });
 });

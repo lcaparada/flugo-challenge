@@ -24,6 +24,15 @@ export const theme = createTheme({
       100: "#f4f6f8",
       500: "#637380",
     },
+    background: {
+      default: "#ffffff",
+      paper: "#ffffff",
+    },
+    divider: "#e1e5eb",
+    text: {
+      primary: "#1a1a1a",
+      secondary: "#637380",
+    },
   },
   components: {
     MuiButton: {

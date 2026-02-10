@@ -1,7 +1,7 @@
 import { AccountBox, Close } from "@mui/icons-material";
+import { Box, IconButton } from "@mui/material";
 import { motion, AnimatePresence } from "motion/react";
-import { cn } from "../../utils/cn";
-import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { useMediaQuery, useTheme } from "@mui/material";
 import { SidebarLogo } from "./SidebarLogo";
 import { SidebarNavItem } from "./SidebarNavItem";
 
@@ -11,51 +11,75 @@ type SidebarProps = {
 };
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
+
   return (
     <>
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            className="md:hidden fixed inset-0 bg-black/50 z-40"
+          <Box
+            component={motion.div}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
+            sx={{
+              display: { xs: "block", md: "none" },
+              position: "fixed",
+              inset: 0,
+              bgcolor: "rgba(0, 0, 0, 0.5)",
+              zIndex: 40,
+            }}
           />
         )}
       </AnimatePresence>
-      <motion.nav
-        className={cn(
-          "bg-sidebar-bg min-h-screen p-6 border-r border-sidebar-border border-dashed",
-          "fixed top-0 left-0 w-64 z-50",
-          "md:relative  md:translate-x-0",
-        )}
+
+      <Box
+        component={motion.nav}
         initial={false}
         animate={{
           x: isDesktop ? 0 : isOpen ? 0 : "-100%",
         }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        sx={{
+          bgcolor: "background.paper",
+          minHeight: "100vh",
+          p: 3,
+          borderRight: 1,
+          borderColor: "divider",
+          borderStyle: "dashed",
+          position: { xs: "fixed", md: "relative" },
+          top: 0,
+          left: 0,
+          width: 256,
+          zIndex: 50,
+        }}
       >
-        <button
-          className={cn(
-            "md:hidden absolute top-4 right-4 p-2",
-            "text-sidebar-text hover:bg-sidebar-border/20",
-            "rounded-lg transition-colors",
-          )}
+        <IconButton
           onClick={onClose}
           aria-label="Fechar menu"
+          sx={{
+            display: { xs: "flex", md: "none" },
+            position: "absolute",
+            top: 16,
+            right: 16,
+            color: "text.secondary",
+            "&:hover": {
+              bgcolor: "action.hover",
+            },
+          }}
         >
           <Close />
-        </button>
+        </IconButton>
 
         <SidebarLogo />
         <SidebarNavItem
           to="/"
           label="Colaboradores"
-          icon={<AccountBox className="text-sidebar-text" />}
+          icon={<AccountBox sx={{ color: "text.secondary" }} />}
         />
-      </motion.nav>
+      </Box>
     </>
   );
 }

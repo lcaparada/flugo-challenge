@@ -1,25 +1,37 @@
 import { Menu } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
 import { motion } from "motion/react";
-import { cn } from "../../utils/cn";
 
 type MenuButtonProps = {
   onClick: () => void;
 };
 
+const MotionIconButton = motion(IconButton);
+
 export function MenuButton({ onClick }: MenuButtonProps) {
   return (
-    <motion.button
-      className={cn(
-        "md:hidden fixed top-4 left-4 z-50 p-2",
-        "bg-sidebar-bg border border-sidebar-border",
-        "rounded-lg shadow-lg",
-      )}
+    <MotionIconButton
       onClick={onClick}
+      aria-label="Abrir menu"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      aria-label="Abrir menu"
+      sx={{
+        display: { xs: "flex", md: "none" },
+        position: "fixed",
+        top: 16,
+        left: 16,
+        zIndex: 50,
+        bgcolor: "background.paper",
+        border: 1,
+        borderColor: "divider",
+        borderRadius: 2,
+        boxShadow: 3,
+        "&:hover": {
+          bgcolor: "background.paper",
+        },
+      }}
     >
-      <Menu className="text-sidebar-text" />
-    </motion.button>
+      <Menu sx={{ color: "text.secondary" }} />
+    </MotionIconButton>
   );
 }

@@ -9,3 +9,4 @@ export * from "./ui/CollaboratorsList";
 // Form Components
 export * from "./form/InputForm";
 export * from "./form/SwitchForm";
+export * from "./form/SelectForm";

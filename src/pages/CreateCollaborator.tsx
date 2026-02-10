@@ -14,8 +14,7 @@ import {
   Link,
   LinearProgress,
 } from "@mui/material";
-import { InputForm, PageHeader, SwitchForm } from "@/components";
-import SelectForm from "@/components/form/select.form";
+import { InputForm, PageHeader, SelectForm, SwitchForm } from "@/components";
 import {
   createCollaboratorSchema,
   type CreateCollaboratorSchema,
@@ -25,11 +24,11 @@ const steps = ["Informações Básicas", "Infos Profissionais"];
 
 const departmentOptions = [
   { value: "design", label: "Design" },
-  { value: "engineering", label: "Engineering" },
-  { value: "product", label: "Product" },
+  { value: "engineering", label: "Engenharia" },
+  { value: "product", label: "Produto" },
   { value: "marketing", label: "Marketing" },
-  { value: "sales", label: "Sales" },
-  { value: "hr", label: "HR" },
+  { value: "sales", label: "Vendas" },
+  { value: "hr", label: "Recursos Humanos" },
 ];
 
 export default function CreateCollaborator() {
@@ -83,11 +82,18 @@ export default function CreateCollaborator() {
   };
 
   return (
-    <motion.div
-      className="w-full bg-background min-h-screen px-8 py-6"
+    <Box
+      component={motion.div}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
+      sx={{
+        width: "100%",
+        bgcolor: "background.default",
+        minHeight: "100vh",
+        px: 4,
+        py: 3,
+      }}
     >
       <PageHeader />
       <Breadcrumbs sx={{ mb: 3 }}>
@@ -258,6 +264,6 @@ export default function CreateCollaborator() {
           </Box>
         </Box>
       </Box>
-    </motion.div>
+    </Box>
   );
 }

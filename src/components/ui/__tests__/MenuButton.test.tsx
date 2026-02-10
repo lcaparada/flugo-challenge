@@ -39,27 +39,11 @@ describe("MenuButton", () => {
     expect(menuIcon).toBeInTheDocument();
   });
 
-  it("applies md:hidden class to hide on desktop", () => {
+  it("renders with Material UI IconButton styling", () => {
     const mockOnClick = vi.fn();
     render(<MenuButton onClick={mockOnClick} />);
 
     const button = screen.getByRole("button");
-    expect(button).toHaveClass("md:hidden");
-  });
-
-  it("applies fixed positioning classes", () => {
-    const mockOnClick = vi.fn();
-    render(<MenuButton onClick={mockOnClick} />);
-
-    const button = screen.getByRole("button");
-    expect(button).toHaveClass("fixed", "top-4", "left-4");
-  });
-
-  it("applies background and border classes", () => {
-    const mockOnClick = vi.fn();
-    render(<MenuButton onClick={mockOnClick} />);
-
-    const button = screen.getByRole("button");
-    expect(button).toHaveClass("bg-sidebar-bg", "border-sidebar-border");
+    expect(button).toHaveClass("MuiIconButton-sizeMedium");
   });
 });

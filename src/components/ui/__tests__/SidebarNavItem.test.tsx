@@ -43,16 +43,4 @@ describe("SidebarNavItem", () => {
     );
     expect(chevronIcon).toBeInTheDocument();
   });
-
-  it("applies the correct text color class", () => {
-    renderNavItem({ label: "Color Test" });
-    const labelElement = screen.getByText("Color Test");
-    expect(labelElement).toHaveClass("text-sidebar-text");
-  });
-
-  it("applies cursor-pointer to the container", () => {
-    const { container } = renderNavItem();
-    const navContainer = container.querySelector(".cursor-pointer");
-    expect(navContainer).toBeInTheDocument();
-  });
 });

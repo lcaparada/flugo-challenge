@@ -6,13 +6,14 @@ import {
 } from "react-hook-form";
 
 interface SelectFormProps<FormType extends FieldValues>
-  extends UseControllerProps<FormType>,
+  extends
+    UseControllerProps<FormType>,
     Omit<TextFieldProps, "name" | "defaultValue"> {
   label: string;
   options: Array<{ value: string; label: string }>;
 }
 
-export default function SelectForm<FormType extends FieldValues>({
+export function SelectForm<FormType extends FieldValues>({
   name,
   control,
   label,

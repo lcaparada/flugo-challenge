@@ -1,31 +1,51 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
-import { Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { collaboratorsMock } from "@/data/collaborators";
 import { CollaboratorsList, PageHeader } from "@/components";
+
+const MotionBox = motion(Box);
 
 export default function Home() {
   const navigate = useNavigate();
 
   return (
-    <motion.div
-      className="w-full bg-background min-h-screen px-8 py-6"
+    <MotionBox
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
+      sx={{
+        width: "100%",
+        bgcolor: "background.default",
+        minHeight: "100vh",
+        px: 4,
+        py: 3,
+      }}
     >
       <PageHeader />
 
-      <main className="mt-8">
-        <motion.section
-          className="flex items-center justify-between mb-6"
+      <Box component="main" sx={{ mt: 4 }}>
+        <MotionBox
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            mb: 3,
+          }}
         >
-          <h1 className="text-2xl font-bold text-text-primary">
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              fontWeight: 700,
+              color: "text.primary",
+            }}
+          >
             Colaboradores
-          </h1>
+          </Typography>
           <Button
             variant="contained"
             color="primary"
@@ -33,16 +53,16 @@ export default function Home() {
           >
             Novo Colaborador
           </Button>
-        </motion.section>
+        </MotionBox>
 
-        <motion.div
+        <MotionBox
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
         >
           <CollaboratorsList collaborators={collaboratorsMock} />
-        </motion.div>
-      </main>
-    </motion.div>
+        </MotionBox>
+      </Box>
+    </MotionBox>
   );
 }

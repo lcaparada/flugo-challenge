@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
+import { Box } from "@mui/material";
 import { theme } from "./theme/muiTheme";
 import Home from "./pages/Home";
 import CreateCollaborator from "./pages/CreateCollaborator";
@@ -12,19 +13,29 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
-        <div className="flex min-h-screen">
+        <Box
+          sx={{
+            display: "flex",
+            minHeight: "100vh",
+          }}
+        >
           <MenuButton onClick={() => setIsSidebarOpen(true)} />
           <Sidebar
             isOpen={isSidebarOpen}
             onClose={() => setIsSidebarOpen(false)}
           />
-          <main className="flex-1">
+          <Box
+            component="main"
+            sx={{
+              flex: 1,
+            }}
+          >
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/colaboradores/novo" element={<CreateCollaborator />} />
             </Routes>
-          </main>
-        </div>
+          </Box>
+        </Box>
       </BrowserRouter>
     </ThemeProvider>
   );
