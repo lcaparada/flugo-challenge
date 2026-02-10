@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import SidebarNavItem from "./SidebarNavItem";
 import { Home } from "@mui/icons-material";
+import { SidebarNavItem } from "./SidebarNavItem";
 
 function renderNavItem(props = {}) {
   const defaultProps = {

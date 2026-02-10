@@ -12,17 +12,13 @@ type SidebarNavItemProps = {
 
 const spring = { type: "spring" as const, stiffness: 400, damping: 28 };
 
-export default function SidebarNavItem({
-  to,
-  label,
-  icon,
-}: SidebarNavItemProps) {
+export function SidebarNavItem({ to, label, icon }: SidebarNavItemProps) {
   return (
     <motion.div
       className={cn(
         "flex items-center justify-between",
         "rounded-lg py-2 px-2 -mx-2",
-        "cursor-pointer group"
+        "cursor-pointer group",
       )}
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: 1, x: 0 }}
@@ -38,7 +34,7 @@ export default function SidebarNavItem({
         className={cn(
           "text-sidebar-text shrink-0 inline-block",
           "transition-transform duration-200 ease-out",
-          "group-hover:translate-x-1"
+          "group-hover:translate-x-1",
         )}
       >
         <ChevronRight />

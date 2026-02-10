@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 
 const spring = { type: "spring" as const, stiffness: 400, damping: 28 };
 
-export default function SidebarLogo() {
+export function SidebarLogo() {
   return (
     <motion.div
       className="w-24 h-fit mb-6 cursor-pointer"

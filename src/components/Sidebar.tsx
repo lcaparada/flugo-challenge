@@ -2,15 +2,15 @@ import { AccountBox, Close } from "@mui/icons-material";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "../utils/cn";
 import { useMediaQuery } from "../hooks/useMediaQuery";
-import SidebarLogo from "./SidebarLogo";
-import SidebarNavItem from "./SidebarNavItem";
+import { SidebarLogo } from "./SidebarLogo";
+import { SidebarNavItem } from "./SidebarNavItem";
 
 type SidebarProps = {
   isOpen: boolean;
   onClose: () => void;
 };
 
-export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   return (
     <>
@@ -27,7 +27,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       </AnimatePresence>
       <motion.nav
         className={cn(
-          "bg-background min-h-screen p-6 border-r border-sidebar-border border-dashed",
+          "bg-sidebar-bg min-h-screen p-6 border-r border-sidebar-border border-dashed",
           "fixed top-0 left-0 w-64 z-50",
           "md:relative md:w-1/6 md:translate-x-0",
         )}
