@@ -1,4 +1,52 @@
-@import "tailwindcss";
+/* CSS Reset - substituindo o Tailwind Preflight */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
 
 /* Custom Scrollbar */
 * {
@@ -25,15 +73,4 @@
 
 *::-webkit-scrollbar-thumb:hover {
   background: var(--theme-primary-hover);
-}
-
-/* Scrollbar para elementos com fundo branco (tabelas, cards) */
-.bg-white::-webkit-scrollbar-track,
-.bg-sidebar-bg::-webkit-scrollbar-track {
-  background: #f5f6f8;
-}
-
-.bg-white::-webkit-scrollbar-thumb,
-.bg-sidebar-bg::-webkit-scrollbar-thumb {
-  border-color: #f5f6f8;
 }
