@@ -1,12 +1,17 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import Sidebar from "./Sidebar";
 
-function renderSidebar() {
+function renderSidebar(props = {}) {
+  const defaultProps = {
+    isOpen: true,
+    onClose: vi.fn(),
+  };
+
   return render(
     <MemoryRouter>
-      <Sidebar />
+      <Sidebar {...defaultProps} {...props} />
     </MemoryRouter>,
   );
 }
