@@ -52,6 +52,7 @@ export function SidebarNavItem({ to, label, icon }: SidebarNavItemProps) {
           textDecoration: "none",
           color: "inherit",
         }}
+        aria-label={label}
       >
         <Box sx={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
           {icon}

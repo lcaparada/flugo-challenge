@@ -55,6 +55,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           width: 256,
           zIndex: 50,
         }}
+        role="navigation"
+        aria-label="Menu de navegação principal"
       >
         <IconButton
           onClick={onClose}

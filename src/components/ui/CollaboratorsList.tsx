@@ -107,6 +107,7 @@ export function CollaboratorsList({ collaborators }: CollaboratorsListProps) {
                     direction={orderBy === headCell.id ? order : "asc"}
                     onClick={() => handleRequestSort(headCell.id)}
                     hideSortIcon={false}
+                    aria-label={`Ordenar por ${headCell.label}`}
                     sx={{
                       "& .MuiTableSortLabel-icon": {
                         opacity: orderBy === headCell.id ? 1 : 0.3,

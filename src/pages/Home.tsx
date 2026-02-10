@@ -26,13 +26,15 @@ export default function Home() {
     >
       <PageHeader />
 
-      <Box
-        component="main"
-        sx={{
+      <Box 
+        component="main" 
+        sx={{ 
           mt: { xs: 2, sm: 3, md: 4 },
           width: "100%",
           maxWidth: "100%",
         }}
+        role="main"
+        aria-label="Conteúdo principal"
       >
         <MotionBox
           initial={{ opacity: 0, y: 10 }}
@@ -66,6 +68,7 @@ export default function Home() {
             sx={{
               width: { xs: "100%", sm: "auto" },
             }}
+            aria-label="Criar novo colaborador"
           >
             Novo Colaborador
           </Button>

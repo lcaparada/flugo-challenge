@@ -48,6 +48,17 @@ h6 {
   overflow-wrap: break-word;
 }
 
+/* Focus visible para acessibilidade */
+*:focus-visible {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+/* Remove outline para mouse clicks mas mantém para navegação por teclado */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* Custom Scrollbar */
 * {
   scrollbar-width: thin;

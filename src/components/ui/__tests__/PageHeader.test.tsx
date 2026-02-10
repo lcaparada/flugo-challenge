@@ -11,13 +11,13 @@ describe("PageHeader", () => {
 
   it("renders the Avatar component", () => {
     render(<PageHeader />);
-    const avatar = screen.getByAltText("User");
+    const avatar = screen.getByAltText("Foto do usuário");
     expect(avatar).toBeInTheDocument();
   });
 
   it("Avatar has correct src attribute", () => {
     render(<PageHeader />);
-    const avatar = screen.getByAltText("User");
+    const avatar = screen.getByAltText("Foto do usuário");
     expect(avatar).toHaveAttribute("src", "/static/images/avatar/1.jpg");
   });
 

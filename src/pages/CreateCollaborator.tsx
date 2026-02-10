@@ -96,7 +96,7 @@ export default function CreateCollaborator() {
       }}
     >
       <PageHeader />
-      <Breadcrumbs sx={{ mb: { xs: 2, sm: 3 }, fontSize: { xs: "0.875rem", sm: "1rem" } }}>
+      <Breadcrumbs aria-label="Navegação" sx={{ mb: { xs: 2, sm: 3 }, fontSize: { xs: "0.875rem", sm: "1rem" } }}>
         <Link
           underline="hover"
           color="inherit"
@@ -112,8 +112,8 @@ export default function CreateCollaborator() {
         <Typography color="text.primary">Cadastrar Colaborador</Typography>
       </Breadcrumbs>
 
-      <Box sx={{ mr: { xs: 0, lg: 12 } }}>
-        <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+        <Box sx={{ mr: { xs: 0, lg: 12 } }}>
+        <Box sx={{ mb: { xs: 2, sm: 3 } }} role="status" aria-label={`Progresso: ${Math.round(progress)}%`}>
           <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
             <Typography variant="body2" color="text.secondary">
               {Math.round(progress)}%
@@ -136,7 +136,7 @@ export default function CreateCollaborator() {
 
         <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: { xs: 3, md: 4 } }}>
           <Box sx={{ width: { xs: "100%", md: 240 }, display: { xs: "none", md: "block" } }}>
-            <Stepper activeStep={activeStep} orientation="vertical">
+            <Stepper activeStep={activeStep} orientation="vertical" aria-label="Etapas do formulário">
               {steps.map((label, index) => (
                 <Step key={label}>
                   <StepLabel
