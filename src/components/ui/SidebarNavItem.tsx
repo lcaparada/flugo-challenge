@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ChevronRight } from "@mui/icons-material";
 import type { ReactNode } from "react";
 import { motion } from "motion/react";
-import { cn } from "../utils/cn";
+import { cn } from "../../utils/cn";
 
 type SidebarNavItemProps = {
   to: string;

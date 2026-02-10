@@ -1,7 +1,7 @@
 import { AccountBox, Close } from "@mui/icons-material";
 import { motion, AnimatePresence } from "motion/react";
-import { cn } from "../utils/cn";
-import { useMediaQuery } from "../hooks/useMediaQuery";
+import { cn } from "../../utils/cn";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { SidebarLogo } from "./SidebarLogo";
 import { SidebarNavItem } from "./SidebarNavItem";
 
@@ -29,7 +29,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         className={cn(
           "bg-sidebar-bg min-h-screen p-6 border-r border-sidebar-border border-dashed",
           "fixed top-0 left-0 w-64 z-50",
-          "md:relative md:w-1/6 md:translate-x-0",
+          "md:relative  md:translate-x-0",
         )}
         initial={false}
         animate={{

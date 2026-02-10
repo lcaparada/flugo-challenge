@@ -1,6 +1,6 @@
 import { Menu } from "@mui/icons-material";
 import { motion } from "motion/react";
-import { cn } from "../utils/cn";
+import { cn } from "../../utils/cn";
 
 type MenuButtonProps = {
   onClick: () => void;

@@ -71,16 +71,16 @@ export function CollaboratorsList({ collaborators }: CollaboratorsListProps) {
       [...collaborators].sort(
         getComparator(order, orderBy) as (
           a: Collaborator,
-          b: Collaborator
-        ) => number
+          b: Collaborator,
+        ) => number,
       ),
-    [collaborators, order, orderBy]
+    [collaborators, order, orderBy],
   );
 
   return (
     <TableContainer
       component={Paper}
-      elevation={3}
+      elevation={5}
       sx={{
         borderRadius: 2,
         overflow: "hidden",

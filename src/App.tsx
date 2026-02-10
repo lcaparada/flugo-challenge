@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./theme/muiTheme";
 import Home from "./pages/Home";
+import CreateCollaborator from "./pages/CreateCollaborator";
 import { MenuButton, Sidebar } from "./components";
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
           <main className="flex-1">
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/colaboradores/novo" element={<CreateCollaborator />} />
             </Routes>
           </main>
         </div>

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { stringToColor, stringAvatar } from "./avatar";
+import { stringToColor, stringAvatar } from "../avatar";
 
 describe("stringToColor", () => {
   it("returns a valid hexadecimal color", () => {

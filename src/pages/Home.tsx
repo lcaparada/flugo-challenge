@@ -1,26 +1,48 @@
-import { Avatar, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { motion } from "motion/react";
+import { Button } from "@mui/material";
 import { collaboratorsMock } from "@/data/collaborators";
-import { CollaboratorsList } from "@/components";
+import { CollaboratorsList, PageHeader } from "@/components";
 
 export default function Home() {
+  const navigate = useNavigate();
+
   return (
-    <div className="w-full bg-background min-h-screen px-8 py-6">
-      <header className="items-end w-full flex justify-end">
-        <Avatar alt="User" src="/static/images/avatar/1.jpg" />
-      </header>
+    <motion.div
+      className="w-full bg-background min-h-screen px-8 py-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
+      <PageHeader />
 
       <main className="mt-8">
-        <section className="flex items-center justify-between mb-6">
+        <motion.section
+          className="flex items-center justify-between mb-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
+        >
           <h1 className="text-2xl font-bold text-text-primary">
             Colaboradores
           </h1>
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/colaboradores/novo")}
+          >
             Novo Colaborador
           </Button>
-        </section>
+        </motion.section>
 
-        <CollaboratorsList collaborators={collaboratorsMock} />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
+        >
+          <CollaboratorsList collaborators={collaboratorsMock} />
+        </motion.div>
       </main>
-    </div>
+    </motion.div>
   );
 }

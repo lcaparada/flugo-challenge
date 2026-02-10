@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { CollaboratorsList } from "./CollaboratorsList";
+import { CollaboratorsList } from "../CollaboratorsList";
 import type { Collaborator } from "@/types/collaborator";
 
 const mockCollaborators: Collaborator[] = [
