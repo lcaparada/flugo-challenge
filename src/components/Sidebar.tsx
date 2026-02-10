@@ -14,7 +14,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   return (
     <>
-      {/* Backdrop (só mobile) */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -26,13 +25,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           />
         )}
       </AnimatePresence>
-
-      {/* Sidebar */}
       <motion.nav
         className={cn(
-          "bg-sidebar-bg min-h-screen p-6 border-r border-sidebar-border border-dashed",
+          "bg-background min-h-screen p-6 border-r border-sidebar-border border-dashed",
           "fixed top-0 left-0 w-64 z-50",
-          "md:relative md:w-1/6 md:translate-x-0"
+          "md:relative md:w-1/6 md:translate-x-0",
         )}
         initial={false}
         animate={{
@@ -44,7 +41,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           className={cn(
             "md:hidden absolute top-4 right-4 p-2",
             "text-sidebar-text hover:bg-sidebar-border/20",
-            "rounded-lg transition-colors"
+            "rounded-lg transition-colors",
           )}
           onClick={onClose}
           aria-label="Fechar menu"

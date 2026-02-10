@@ -1,10 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-sidebar-bg: var(--theme-sidebar-bg);
   --color-sidebar-border: var(--theme-sidebar-border);
   --color-sidebar-text: var(--theme-sidebar-text);
-  --color-page-bg: var(--theme-page-bg);
+  --color-background: var(--theme-background);
   --color-text-primary: var(--theme-text-primary);
   --color-text-secondary: var(--theme-text-secondary);
 }
@@ -15,10 +14,9 @@
   font-weight: 400;
   color-scheme: light;
 
-  --theme-sidebar-bg: #ffffff;
   --theme-sidebar-border: #e1e5eb;
   --theme-sidebar-text: #637380;
-  --theme-page-bg: #ffff;
+  --theme-background: #ffff;
   --theme-text-primary: #1a1a1a;
   --theme-text-secondary: #637380;
 
