@@ -4,26 +4,27 @@ import userEvent from "@testing-library/user-event";
 import { CollaboratorsList } from "../CollaboratorsList";
 import type { Collaborator } from "@/types/collaborator";
 
+// department deve ser o value de departmentOptions (ex.: "design") para exibir o label na tabela
 const mockCollaborators: Collaborator[] = [
   {
     id: "1",
     name: "Ana Silva",
     email: "ana@example.com",
-    department: "TI",
+    department: "engineering",
     isActive: true,
   },
   {
     id: "2",
     name: "Carlos Santos",
     email: "carlos@example.com",
-    department: "Marketing",
+    department: "marketing",
     isActive: false,
   },
   {
     id: "3",
     name: "Beatriz Lima",
     email: "beatriz@example.com",
-    department: "Design",
+    department: "design",
     isActive: true,
   },
 ];
@@ -43,7 +44,7 @@ describe("CollaboratorsList", () => {
 
     expect(screen.getByText("Ana Silva")).toBeInTheDocument();
     expect(screen.getByText("ana@example.com")).toBeInTheDocument();
-    expect(screen.getByText("TI")).toBeInTheDocument();
+    expect(screen.getByText("Engenharia")).toBeInTheDocument();
 
     expect(screen.getByText("Carlos Santos")).toBeInTheDocument();
     expect(screen.getByText("carlos@example.com")).toBeInTheDocument();

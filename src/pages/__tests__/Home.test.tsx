@@ -17,13 +17,13 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-vi.mock("@/hooks", () => ({
-  useCollaborators: () => ({
+vi.mock("@/useCases", () => ({
+  useGetAllCollaborators: () => ({
     data: {
       pages: [
         {
           data: [
-            { id: "1", name: "Test User", email: "test@example.com", department: "TI", isActive: true },
+            { id: "1", name: "Test User", email: "test@example.com", department: "engineering", isActive: true },
           ],
           lastDoc: null,
           hasMore: false,
@@ -33,6 +33,9 @@ vi.mock("@/hooks", () => ({
     isLoading: false,
     isError: false,
     error: null,
+    allCollaborators: [
+      { id: "1", name: "Test User", email: "test@example.com", department: "engineering", isActive: true },
+    ],
     fetchNextPage: vi.fn(),
     hasNextPage: false,
     isFetchingNextPage: false,
@@ -46,6 +49,8 @@ vi.mock("@/components", () => ({
     </div>
   ),
   PageHeader: () => <div data-testid="page-header">Page Header</div>,
+  Loading: () => <div data-testid="loading">Loading</div>,
+  ErrorMessage: () => null,
 }));
 
 function renderHome() {
