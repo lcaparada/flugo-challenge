@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import { Box } from "@mui/material";
-import {} from "@tanstack/react-query";
 import { theme } from "./theme/muiTheme";
 import Home from "./pages/Home";
 import CreateCollaborator from "./pages/CreateCollaborator";

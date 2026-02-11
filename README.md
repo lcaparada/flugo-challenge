@@ -48,12 +48,13 @@ A aplicação estará disponível em **http://localhost:5173** (ou na porta indi
 
 ## Outros comandos
 
-| Comando        | Descrição                    |
-|----------------|------------------------------|
-| `pnpm build`   | Gera o build de produção     |
-| `pnpm preview` | Preview do build localmente  |
-| `pnpm test`    | Roda os testes (Vitest)      |
-| `pnpm lint`    | Roda o ESLint                |
+| Comando          | Descrição                      |
+|------------------|--------------------------------|
+| `pnpm build`     | Gera o build de produção       |
+| `pnpm preview`   | Preview do build localmente    |
+| `pnpm test`      | Roda os testes (modo watch)   |
+| `pnpm test:run`  | Roda os testes uma vez (CI)    |
+| `pnpm lint`      | Roda o ESLint                  |
 
 ## Stack
 

@@ -17,9 +17,9 @@ body {
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
 }
 
 img,
@@ -48,24 +48,26 @@ h6 {
   overflow-wrap: break-word;
 }
 
-/* Focus visible para acessibilidade */
+:root {
+  --theme-primary: #34c466;
+  --theme-primary-hover: #2ba355;
+  --theme-page-bg: #ffffff;
+}
+
 *:focus-visible {
-  outline: 2px solid #1976d2;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }
 
-/* Remove outline para mouse clicks mas mantém para navegação por teclado */
 *:focus:not(:focus-visible) {
   outline: none;
 }
 
-/* Custom Scrollbar */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--theme-primary) var(--theme-page-bg);
 }
 
-/* Webkit browsers (Chrome, Safari, Edge) */
 *::-webkit-scrollbar {
   width: 10px;
   height: 10px;
