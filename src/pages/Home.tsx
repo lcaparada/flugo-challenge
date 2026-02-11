@@ -1,13 +1,39 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import { Box, Button, Typography } from "@mui/material";
-import { collaboratorsMock } from "@/data/collaborators";
-import { CollaboratorsList, PageHeader } from "@/components";
+import {
+  CollaboratorsList,
+  ErrorMessage,
+  Loading,
+  PageHeader,
+} from "@/components";
+import { useGetAllCollaborators } from "@/useCases";
 
 const MotionBox = motion(Box);
 
 export default function Home() {
   const navigate = useNavigate();
+  const {
+    isLoading,
+    isError,
+    error,
+    allCollaborators,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetAllCollaborators();
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isError) {
+    return (
+      <ErrorMessage
+        message={`Erro ao carregar colaboradores: ${error?.message ?? "Erro desconhecido"}`}
+      />
+    );
+  }
 
   return (
     <MotionBox
@@ -26,9 +52,9 @@ export default function Home() {
     >
       <PageHeader />
 
-      <Box 
-        component="main" 
-        sx={{ 
+      <Box
+        component="main"
+        sx={{
           mt: { xs: 2, sm: 3, md: 4 },
           width: "100%",
           maxWidth: "100%",
@@ -74,7 +100,40 @@ export default function Home() {
           </Button>
         </MotionBox>
 
-        <CollaboratorsList collaborators={collaboratorsMock} />
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: "100%",
+            overflow: "hidden",
+          }}
+        >
+          <MotionBox
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
+          >
+            <CollaboratorsList
+              collaborators={allCollaborators}
+              emptyStateAction={{
+                label: "Novo Colaborador",
+                onClick: () => navigate("/colaboradores/novo"),
+              }}
+            />
+          </MotionBox>
+
+          {hasNextPage && (
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+              <Button
+                variant="outlined"
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+                sx={{ textTransform: "none", fontWeight: 600 }}
+              >
+                {isFetchingNextPage ? "Carregando..." : "Carregar mais"}
+              </Button>
+            </Box>
+          )}
+        </Box>
       </Box>
     </MotionBox>
   );

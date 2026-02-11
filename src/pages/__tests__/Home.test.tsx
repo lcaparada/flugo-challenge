@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { theme } from "@/theme/muiTheme";
 import Home from "../Home";
 
@@ -16,6 +17,28 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
+vi.mock("@/hooks", () => ({
+  useCollaborators: () => ({
+    data: {
+      pages: [
+        {
+          data: [
+            { id: "1", name: "Test User", email: "test@example.com", department: "TI", isActive: true },
+          ],
+          lastDoc: null,
+          hasMore: false,
+        },
+      ],
+    },
+    isLoading: false,
+    isError: false,
+    error: null,
+    fetchNextPage: vi.fn(),
+    hasNextPage: false,
+    isFetchingNextPage: false,
+  }),
+}));
+
 vi.mock("@/components", () => ({
   CollaboratorsList: ({ collaborators }: { collaborators: unknown[] }) => (
     <div data-testid="collaborators-list">
@@ -26,12 +49,20 @@ vi.mock("@/components", () => ({
 }));
 
 function renderHome() {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+    },
+  });
+
   return render(
-    <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <Home />
-      </BrowserRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <Home />
+        </BrowserRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 

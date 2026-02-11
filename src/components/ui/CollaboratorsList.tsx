@@ -10,10 +10,15 @@ import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
 import { stringAvatar } from "@/utils/avatar";
+import { EmptyState } from "@/components/ui/EmptyState";
 import type { Collaborator } from "@/types/collaborator";
 
 type CollaboratorsListProps = {
   collaborators: Collaborator[];
+  emptyStateAction?: {
+    label: string;
+    onClick: () => void;
+  };
 };
 
 type Order = "asc" | "desc";
@@ -55,7 +60,10 @@ const headCells: readonly HeadCell[] = [
   { id: "isActive", label: "Status", sortable: true },
 ];
 
-export function CollaboratorsList({ collaborators }: CollaboratorsListProps) {
+export function CollaboratorsList({
+  collaborators,
+  emptyStateAction,
+}: CollaboratorsListProps) {
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<CollaboratorKey>("name");
 
@@ -75,6 +83,16 @@ export function CollaboratorsList({ collaborators }: CollaboratorsListProps) {
       ),
     [collaborators, order, orderBy],
   );
+
+  if (collaborators.length === 0) {
+    return (
+      <EmptyState
+        title="Nenhum colaborador cadastrado"
+        description="Adicione o primeiro colaborador para começar."
+        primaryAction={emptyStateAction}
+      />
+    );
+  }
 
   return (
     <TableContainer

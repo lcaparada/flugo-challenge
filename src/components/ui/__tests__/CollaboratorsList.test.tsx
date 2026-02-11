@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CollaboratorsList } from "../CollaboratorsList";
@@ -64,11 +64,31 @@ describe("CollaboratorsList", () => {
     expect(inactiveChips).toHaveLength(1);
   });
 
-  it("renders empty table when no collaborators", () => {
+  it("renders empty state when no collaborators", () => {
     render(<CollaboratorsList collaborators={[]} />);
 
-    expect(screen.getByText("Nome")).toBeInTheDocument();
-    expect(screen.queryByText("Ana Silva")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("status", { name: /nenhum colaborador cadastrado/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/adicione o primeiro colaborador para começar/i),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Nome")).not.toBeInTheDocument();
+  });
+
+  it("renders empty state with action button when emptyStateAction is provided", async () => {
+    const onAction = vi.fn();
+    render(
+      <CollaboratorsList
+        collaborators={[]}
+        emptyStateAction={{ label: "Novo Colaborador", onClick: onAction }}
+      />,
+    );
+
+    const button = screen.getByRole("button", { name: /novo colaborador/i });
+    expect(button).toBeInTheDocument();
+    await userEvent.setup().click(button);
+    expect(onAction).toHaveBeenCalledTimes(1);
   });
 
   it("sorts by name when clicking name header", async () => {
