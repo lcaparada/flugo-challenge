@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "motion/react";
 import {
+  Alert,
   Box,
   Button,
   Typography,
@@ -20,23 +21,19 @@ import {
   type CreateCollaboratorSchema,
 } from "@/schemas";
 import { useCreateCollaborator } from "@/useCases";
+import { departmentOptions } from "@/constants";
 
 const steps = ["Informações Básicas", "Infos Profissionais"];
-
-const departmentOptions = [
-  { value: "design", label: "Design" },
-  { value: "engineering", label: "Engenharia" },
-  { value: "product", label: "Produto" },
-  { value: "marketing", label: "Marketing" },
-  { value: "sales", label: "Vendas" },
-  { value: "hr", label: "Recursos Humanos" },
-];
 
 export default function CreateCollaborator() {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
-  const { mutateAsync: createCollaborator, isPending } =
-    useCreateCollaborator();
+  const {
+    mutateAsync: createCollaborator,
+    isPending,
+    isError,
+    error,
+  } = useCreateCollaborator();
 
   const {
     control,
@@ -122,6 +119,12 @@ export default function CreateCollaborator() {
         </Link>
         <Typography color="text.primary">Cadastrar Colaborador</Typography>
       </Breadcrumbs>
+
+      {isError && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error?.message ?? "Erro ao salvar colaborador."}
+        </Alert>
+      )}
 
       <Box sx={{ mr: { xs: 0, lg: 12 } }}>
         <Box

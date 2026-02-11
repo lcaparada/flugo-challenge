@@ -12,6 +12,7 @@ import Avatar from "@mui/material/Avatar";
 import { stringAvatar } from "@/utils/avatar";
 import { EmptyState } from "@/components/ui/EmptyState";
 import type { Collaborator } from "@/types/collaborator";
+import { departmentOptions } from "@/constants";
 
 type CollaboratorsListProps = {
   collaborators: Collaborator[];
@@ -213,8 +214,11 @@ export function CollaboratorsList({
                   fontSize: { xs: "0.75rem", sm: "0.875rem" },
                 }}
               >
-                {collaborator.department.slice(0, 1).toUpperCase() +
-                  collaborator.department.slice(1)}
+                {
+                  departmentOptions.find(
+                    (option) => option.value === collaborator.department,
+                  )?.label
+                }
               </TableCell>
               <TableCell sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1.5, sm: 2 } }}>
                 <Chip

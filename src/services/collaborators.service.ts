@@ -6,14 +6,16 @@ import {
   getDocs,
   startAfter,
   addDoc,
+  where,
   type QueryDocumentSnapshot,
   type DocumentData,
 } from "firebase/firestore";
+import { createEmailAlreadyExistsError } from "@/infra";
 import { db } from "@/lib/firebase";
 import type { Collaborator } from "@/types/collaborator";
 
 const COLLECTION_NAME = "collaborators";
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 10;
 
 export type PaginatedResult<T> = {
   data: T[];
@@ -57,7 +59,17 @@ export const collaboratorsService = {
   },
 
   async create(data: Omit<Collaborator, "id">): Promise<string> {
-    const docRef = await addDoc(collection(db, COLLECTION_NAME), data);
+    const collaboratorsRef = collection(db, COLLECTION_NAME);
+    const emailQuery = query(
+      collaboratorsRef,
+      where("email", "==", data.email),
+      limit(1),
+    );
+    const existing = await getDocs(emailQuery);
+    if (!existing.empty) {
+      throw createEmailAlreadyExistsError(data.email);
+    }
+    const docRef = await addDoc(collaboratorsRef, data);
     return docRef.id;
   },
 };
