@@ -98,6 +98,8 @@ export function CollaboratorsList({
   return (
     <TableContainer
       sx={{
+        maxHeight: { xs: "60vh", sm: "65vh", md: "70vh" },
+        overflow: "auto",
         borderWidth: 1,
         borderColor: "divider",
         borderStyle: "solid",
@@ -105,7 +107,7 @@ export function CollaboratorsList({
         boxShadow: "5px 3px 12px -9px #000000",
       }}
     >
-      <Table>
+      <Table stickyHeader>
         <TableHead sx={{ backgroundColor: "grey.100" }}>
           <TableRow>
             {headCells.map((headCell) => (
