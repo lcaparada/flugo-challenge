@@ -5,6 +5,7 @@ import {
   limit,
   getDocs,
   startAfter,
+  addDoc,
   type QueryDocumentSnapshot,
   type DocumentData,
 } from "firebase/firestore";
@@ -12,7 +13,7 @@ import { db } from "@/lib/firebase";
 import type { Collaborator } from "@/types/collaborator";
 
 const COLLECTION_NAME = "collaborators";
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 2;
 
 export type PaginatedResult<T> = {
   data: T[];
@@ -53,5 +54,10 @@ export const collaboratorsService = {
       lastDoc: data[data.length - 1] || null,
       hasMore,
     };
+  },
+
+  async create(data: Omit<Collaborator, "id">): Promise<string> {
+    const docRef = await addDoc(collection(db, COLLECTION_NAME), data);
+    return docRef.id;
   },
 };

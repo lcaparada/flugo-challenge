@@ -19,6 +19,7 @@ import {
   createCollaboratorSchema,
   type CreateCollaboratorSchema,
 } from "@/schemas";
+import { useCreateCollaborator } from "@/useCases";
 
 const steps = ["Informações Básicas", "Infos Profissionais"];
 
@@ -34,6 +35,8 @@ const departmentOptions = [
 export default function CreateCollaborator() {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
+  const { mutateAsync: createCollaborator, isPending } =
+    useCreateCollaborator();
 
   const {
     control,
@@ -48,7 +51,7 @@ export default function CreateCollaborator() {
       isActive: true,
       department: "",
     },
-    mode: "onChange",
+    mode: "onSubmit",
   });
 
   const progress = ((activeStep + 1) / steps.length) * 100;
@@ -76,8 +79,13 @@ export default function CreateCollaborator() {
     }
   };
 
-  const onSubmit = (data: CreateCollaboratorSchema) => {
-    console.log("Form submitted:", data);
+  const onSubmit = async (data: CreateCollaboratorSchema) => {
+    await createCollaborator({
+      name: data.name,
+      email: data.email,
+      department: data.department,
+      isActive: data.isActive,
+    });
     navigate("/");
   };
 
@@ -96,7 +104,10 @@ export default function CreateCollaborator() {
       }}
     >
       <PageHeader />
-      <Breadcrumbs aria-label="Navegação" sx={{ mb: { xs: 2, sm: 3 }, fontSize: { xs: "0.875rem", sm: "1rem" } }}>
+      <Breadcrumbs
+        aria-label="Navegação"
+        sx={{ mb: { xs: 2, sm: 3 }, fontSize: { xs: "0.875rem", sm: "1rem" } }}
+      >
         <Link
           underline="hover"
           color="inherit"
@@ -112,8 +123,12 @@ export default function CreateCollaborator() {
         <Typography color="text.primary">Cadastrar Colaborador</Typography>
       </Breadcrumbs>
 
-        <Box sx={{ mr: { xs: 0, lg: 12 } }}>
-        <Box sx={{ mb: { xs: 2, sm: 3 } }} role="status" aria-label={`Progresso: ${Math.round(progress)}%`}>
+      <Box sx={{ mr: { xs: 0, lg: 12 } }}>
+        <Box
+          sx={{ mb: { xs: 2, sm: 3 } }}
+          role="status"
+          aria-label={`Progresso: ${Math.round(progress)}%`}
+        >
           <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
             <Typography variant="body2" color="text.secondary">
               {Math.round(progress)}%
@@ -134,9 +149,24 @@ export default function CreateCollaborator() {
           />
         </Box>
 
-        <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: { xs: 3, md: 4 } }}>
-          <Box sx={{ width: { xs: "100%", md: 240 }, display: { xs: "none", md: "block" } }}>
-            <Stepper activeStep={activeStep} orientation="vertical" aria-label="Etapas do formulário">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            gap: { xs: 3, md: 4 },
+          }}
+        >
+          <Box
+            sx={{
+              width: { xs: "100%", md: 240 },
+              display: { xs: "none", md: "block" },
+            }}
+          >
+            <Stepper
+              activeStep={activeStep}
+              orientation="vertical"
+              aria-label="Etapas do formulário"
+            >
               {steps.map((label, index) => (
                 <Step key={label}>
                   <StepLabel
@@ -261,6 +291,8 @@ export default function CreateCollaborator() {
                 variant="contained"
                 color="primary"
                 fullWidth
+                loading={isPending}
+                disabled={isPending}
                 sx={{
                   width: { xs: "100%", sm: "auto" },
                   borderRadius: 2,

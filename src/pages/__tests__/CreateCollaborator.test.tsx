@@ -3,6 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { theme } from "@/theme/muiTheme";
 import CreateCollaborator from "../CreateCollaborator";
 
@@ -25,12 +26,17 @@ vi.mock("@/components", async () => {
 });
 
 function renderCreateCollaborator() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
   return render(
-    <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <CreateCollaborator />
-      </BrowserRouter>
-    </ThemeProvider>,
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <CreateCollaborator />
+        </BrowserRouter>
+      </ThemeProvider>
+    </QueryClientProvider>,
   );
 }
 

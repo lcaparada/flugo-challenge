@@ -213,7 +213,8 @@ export function CollaboratorsList({
                   fontSize: { xs: "0.75rem", sm: "0.875rem" },
                 }}
               >
-                {collaborator.department}
+                {collaborator.department.slice(0, 1).toUpperCase() +
+                  collaborator.department.slice(1)}
               </TableCell>
               <TableCell sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1.5, sm: 2 } }}>
                 <Chip

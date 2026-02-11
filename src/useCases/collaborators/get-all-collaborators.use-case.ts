@@ -3,7 +3,7 @@ import type { InfiniteData } from "@tanstack/react-query";
 import type { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 import { collaboratorsService, type PaginatedResult } from "@/services";
 import type { Collaborator } from "@/types/collaborator";
-import { QueryKeys } from "@/infra";
+import { QueryKeys, type QueryKey } from "@/infra";
 
 export function useGetAllCollaborators() {
   const {
@@ -18,7 +18,7 @@ export function useGetAllCollaborators() {
     PaginatedResult<Collaborator>,
     Error,
     InfiniteData<PaginatedResult<Collaborator>>,
-    [QueryKeys],
+    [QueryKey],
     QueryDocumentSnapshot<DocumentData> | undefined
   >({
     queryKey: [QueryKeys.GetAllCollaborators],

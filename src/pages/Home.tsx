@@ -100,40 +100,27 @@ export default function Home() {
           </Button>
         </MotionBox>
 
-        <Box
-          sx={{
-            width: "100%",
-            maxWidth: "100%",
-            overflow: "hidden",
+        <CollaboratorsList
+          collaborators={allCollaborators}
+          emptyStateAction={{
+            label: "Novo Colaborador",
+            onClick: () => navigate("/colaboradores/novo"),
           }}
-        >
-          <MotionBox
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
-          >
-            <CollaboratorsList
-              collaborators={allCollaborators}
-              emptyStateAction={{
-                label: "Novo Colaborador",
-                onClick: () => navigate("/colaboradores/novo"),
-              }}
-            />
-          </MotionBox>
+        />
 
-          {hasNextPage && (
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-              <Button
-                variant="outlined"
-                onClick={() => fetchNextPage()}
-                disabled={isFetchingNextPage}
-                sx={{ textTransform: "none", fontWeight: 600 }}
-              >
-                {isFetchingNextPage ? "Carregando..." : "Carregar mais"}
-              </Button>
-            </Box>
-          )}
-        </Box>
+        {hasNextPage && (
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+            <Button
+              variant="outlined"
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+              loading={isFetchingNextPage}
+              sx={{ textTransform: "none", fontWeight: 600 }}
+            >
+              Carregar mais
+            </Button>
+          </Box>
+        )}
       </Box>
     </MotionBox>
   );
