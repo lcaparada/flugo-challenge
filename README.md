@@ -1,75 +1,66 @@
-# React + TypeScript + Vite
+# Flugo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação de gestão de colaboradores desenvolvida com React, TypeScript, Vite, Material UI e Firebase.
 
-Currently, two official plugins are available:
+## Como rodar localmente
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Pré-requisitos
 
-## React Compiler
+- **Node.js** 18+ (recomendado 20+)
+- **pnpm** (ou npm/yarn)
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### 1. Clonar e instalar dependências
 
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone <url-do-repositorio>
+cd front-end-challenge
+pnpm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Configurar variáveis de ambiente
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Copie o arquivo de exemplo e preencha com as credenciais do seu projeto Firebase:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cp .env.example .env
 ```
+
+Edite o `.env` e preencha os valores (obtidos no [Firebase Console](https://console.firebase.google.com) → seu projeto → Configurações do projeto → Seus apps):
+
+```env
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+```
+
+### 3. Subir o projeto
+
+```bash
+pnpm dev
+```
+
+A aplicação estará disponível em **http://localhost:5173** (ou na porta indicada no terminal).
+
+---
+
+## Outros comandos
+
+| Comando        | Descrição                    |
+|----------------|------------------------------|
+| `pnpm build`   | Gera o build de produção     |
+| `pnpm preview` | Preview do build localmente  |
+| `pnpm test`    | Roda os testes (Vitest)      |
+| `pnpm lint`    | Roda o ESLint                |
+
+## Stack
+
+- React 19 + TypeScript
+- Vite 7
+- Material UI
+- React Query (TanStack Query)
+- React Hook Form + Zod
+- Firebase (Firestore)
+- Vitest + Testing Library
