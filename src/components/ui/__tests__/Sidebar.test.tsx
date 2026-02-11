@@ -3,6 +3,10 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { Sidebar } from "../Sidebar";
 
+vi.mock("@/hooks", () => ({
+  useAuth: () => ({ logout: vi.fn() }),
+}));
+
 function renderSidebar(props = {}) {
   const defaultProps = {
     isOpen: true,

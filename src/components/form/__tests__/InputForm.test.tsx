@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useForm } from "react-hook-form";
@@ -101,5 +101,97 @@ describe("InputForm", () => {
     render(<TestWrapperWithType />);
     const input = screen.getByLabelText("Email");
     expect(input).toHaveAttribute("type", "email");
+  });
+
+  describe("when type is password", () => {
+    function PasswordWrapper() {
+      const { control } = useForm({
+        defaultValues: { password: "" },
+      });
+      return (
+        <InputForm
+          name="password"
+          control={control}
+          label="Senha"
+          type="password"
+        />
+      );
+    }
+
+    it("renders the password visibility toggle button", () => {
+      render(<PasswordWrapper />);
+      const toggleButton = screen.getByRole("button", {
+        name: /ocultar senha|exibir senha/i,
+      });
+      expect(toggleButton).toBeInTheDocument();
+    });
+
+    it("renders input as type password initially", () => {
+      render(<PasswordWrapper />);
+      const input = screen.getByLabelText("Senha");
+      expect(input).toHaveAttribute("type", "password");
+    });
+
+    it("toggles to visible (type text) when button is clicked", async () => {
+      const user = userEvent.setup();
+      render(<PasswordWrapper />);
+      const toggleButton = screen.getByRole("button", {
+        name: /ocultar senha|exibir senha/i,
+      });
+      const input = screen.getByLabelText("Senha");
+
+      await user.click(toggleButton);
+
+      expect(input).toHaveAttribute("type", "text");
+    });
+
+    it("toggles back to password when button is clicked twice", async () => {
+      const user = userEvent.setup();
+      render(<PasswordWrapper />);
+      const toggleButton = screen.getByRole("button", {
+        name: /ocultar senha|exibir senha/i,
+      });
+      const input = screen.getByLabelText("Senha");
+
+      await user.click(toggleButton);
+      expect(input).toHaveAttribute("type", "text");
+
+      await user.click(toggleButton);
+      expect(input).toHaveAttribute("type", "password");
+    });
+
+    it("does not submit form when clicking the toggle (button has type button)", async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn();
+      function PasswordFormWrapper() {
+        const { control, handleSubmit } = useForm({
+          defaultValues: { password: "" },
+        });
+        return (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <InputForm
+              name="password"
+              control={control}
+              label="Senha"
+              type="password"
+            />
+            <button type="submit">Enviar</button>
+          </form>
+        );
+      }
+      render(<PasswordFormWrapper />);
+      const toggleButton = screen.getByRole("button", {
+        name: /ocultar senha|exibir senha/i,
+      });
+      await user.click(toggleButton);
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+  });
+
+  it("does not render visibility toggle when type is not password", () => {
+    render(<TestWrapper />);
+    expect(
+      screen.queryByRole("button", { name: /ocultar senha|exibir senha/i }),
+    ).not.toBeInTheDocument();
   });
 });

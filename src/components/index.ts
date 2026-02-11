@@ -9,6 +9,9 @@ export * from "./ui/Loading";
 export * from "./ui/ErrorMessage";
 export * from "./ui/EmptyState";
 
+// Layout / Auth
+export * from "./ProtectedRoute";
+
 // Form Components
 export * from "./form/InputForm";
 export * from "./form/SwitchForm";
