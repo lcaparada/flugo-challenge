@@ -16,3 +16,4 @@ export * from "./ProtectedRoute";
 export * from "./form/InputForm";
 export * from "./form/SwitchForm";
 export * from "./form/SelectForm";
+export * from "./form/DatePickerForm";

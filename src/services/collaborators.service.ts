@@ -58,6 +58,20 @@ export const collaboratorsService = {
     };
   },
 
+  async getAllManagers(): Promise<Collaborator[]> {
+    const collaboratorsRef = collection(db, COLLECTION_NAME);
+    const q = query(
+      collaboratorsRef,
+      where("level", "==", "gestor"),
+    );
+    const snapshot = await getDocs(q);
+    const collaborators = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Collaborator[];
+    return collaborators.sort((a, b) => a.name.localeCompare(b.name));
+  },
+
   async create(data: Omit<Collaborator, "id">): Promise<string> {
     const collaboratorsRef = collection(db, COLLECTION_NAME);
     const emailQuery = query(
@@ -69,7 +83,11 @@ export const collaboratorsService = {
     if (!existing.empty) {
       throw createEmailAlreadyExistsError(data.email);
     }
-    const docRef = await addDoc(collaboratorsRef, data);
+    const payload = {
+      ...data,
+      baseSalary: data.baseSalary != null ? Number(data.baseSalary) : undefined,
+    };
+    const docRef = await addDoc(collaboratorsRef, payload);
     return docRef.id;
   },
 };

@@ -2,6 +2,9 @@ import { useState } from "react";
 import { BrowserRouter, Outlet, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import { Box } from "@mui/material";
+import "dayjs/locale/pt-br";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { theme } from "./theme/muiTheme";
 import Home from "./pages/Home";
 import CreateCollaborator from "./pages/CreateCollaborator";
@@ -44,7 +47,8 @@ export default function App() {
     <AuthProvider>
       <QueryProvider>
         <ThemeProvider theme={theme}>
-          <BrowserRouter>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+            <BrowserRouter>
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
@@ -59,7 +63,8 @@ export default function App() {
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </BrowserRouter>
+            </BrowserRouter>
+          </LocalizationProvider>
         </ThemeProvider>
       </QueryProvider>
     </AuthProvider>

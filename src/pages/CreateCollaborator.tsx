@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useMemo, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "motion/react";
@@ -15,13 +15,20 @@ import {
   Link,
   LinearProgress,
 } from "@mui/material";
-import { InputForm, PageHeader, SelectForm, SwitchForm } from "@/components";
+import dayjs from "dayjs";
+import {
+  DatePickerForm,
+  InputForm,
+  PageHeader,
+  SelectForm,
+  SwitchForm,
+} from "@/components";
 import {
   createCollaboratorSchema,
   type CreateCollaboratorSchema,
 } from "@/schemas";
-import { useCreateCollaborator } from "@/useCases";
-import { departmentOptions } from "@/constants";
+import { useCreateCollaborator, useGetAllManagers } from "@/useCases";
+import { departmentOptions, levelOptions } from "@/constants";
 
 const steps = ["Informações Básicas", "Infos Profissionais"];
 
@@ -34,6 +41,7 @@ export default function CreateCollaborator() {
     isError,
     error,
   } = useCreateCollaborator();
+  const { managers } = useGetAllManagers();
 
   const {
     control,
@@ -47,15 +55,29 @@ export default function CreateCollaborator() {
       email: "",
       isActive: true,
       department: "",
+      occupation: "",
+      startDate: "",
+      level: "junior",
+      managerId: "",
+      baseSalary: "",
     },
     mode: "onSubmit",
   });
+
+  const level = useWatch({ control, name: "level", defaultValue: "junior" });
+
+  const gestorOptions = useMemo(
+    () => managers.map((c) => ({ value: c.id, label: c.name })),
+    [managers],
+  );
 
   const progress = ((activeStep + 1) / steps.length) * 100;
 
   const handleNext = async () => {
     const fieldsToValidate: Array<keyof CreateCollaboratorSchema> =
-      activeStep === 0 ? ["name", "email", "isActive"] : ["department"];
+      activeStep === 0
+        ? ["name", "email", "isActive"]
+        : ["department", "occupation", "startDate", "level", "baseSalary"];
 
     const isValid = await trigger(fieldsToValidate);
 
@@ -77,11 +99,17 @@ export default function CreateCollaborator() {
   };
 
   const onSubmit = async (data: CreateCollaboratorSchema) => {
+    const baseSalaryNum = Number(String(data.baseSalary).replace(",", "."));
     await createCollaborator({
       name: data.name,
       email: data.email,
       department: data.department,
       isActive: data.isActive,
+      occupation: data.occupation,
+      startDate: data.startDate,
+      level: data.level,
+      managerId: data.managerId ?? "",
+      baseSalary: baseSalaryNum,
     });
     navigate("/");
   };
@@ -258,6 +286,56 @@ export default function CreateCollaborator() {
                       options={departmentOptions}
                       error={!!errors.department}
                       helperText={errors.department?.message}
+                    />
+                    <InputForm
+                      name="occupation"
+                      control={control}
+                      label="Cargo"
+                      placeholder="Ex.: Desenvolvedor Front-end"
+                      error={!!errors.occupation}
+                      helperText={errors.occupation?.message}
+                    />
+                    <DatePickerForm
+                      name="startDate"
+                      control={control}
+                      label="Data de admissão"
+                      maxDate={dayjs()}
+                      error={!!errors.startDate}
+                      helperText={errors.startDate?.message}
+                    />
+                    <SelectForm
+                      name="level"
+                      control={control}
+                      label="Nível hierárquico"
+                      options={levelOptions}
+                      error={!!errors.level}
+                      helperText={errors.level?.message}
+                    />
+                    {level !== "gestor" && (
+                      <SelectForm
+                        name="managerId"
+                        control={control}
+                        label="Gestor responsável"
+                        options={[
+                          { value: "", label: "Nenhum" },
+                          ...gestorOptions,
+                        ]}
+                        error={!!errors.managerId}
+                        helperText={errors.managerId?.message}
+                      />
+                    )}
+                    <InputForm
+                      name="baseSalary"
+                      control={control}
+                      label="Salário base (R$)"
+                      type="number"
+                      inputMode="decimal"
+                      placeholder="0,00"
+                      error={!!errors.baseSalary}
+                      helperText={errors.baseSalary?.message}
+                      slotProps={{
+                        input: { inputProps: { min: 0, step: 0.01 } },
+                      }}
                     />
                   </Box>
                 </motion.div>

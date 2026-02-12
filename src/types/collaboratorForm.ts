@@ -1,3 +1,5 @@
+import type { Level } from "./collaborator";
+
 export type CollaboratorFormData = {
   // Basic Info
   name: string;
@@ -6,9 +8,11 @@ export type CollaboratorFormData = {
 
   // Professional Info
   department: string;
-  role: string;
-  salary: string;
+  cargo: string;
   startDate: string;
+  level: Level;
+  managerId: string;
+  baseSalary: string;
 };
 
 export const initialFormData: CollaboratorFormData = {
@@ -16,7 +20,9 @@ export const initialFormData: CollaboratorFormData = {
   email: "",
   isActive: true,
   department: "",
-  role: "",
-  salary: "",
+  cargo: "",
   startDate: "",
+  level: "junior",
+  managerId: "",
+  baseSalary: "",
 };

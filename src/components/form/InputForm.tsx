@@ -44,23 +44,26 @@ export function InputForm<FormType extends FieldValues>({
           variant="outlined"
           slotProps={{
             input: {
-              endAdornment: isPassword ? (
-                <InputAdornment position="end">
-                  <IconButton
-                    type="button"
-                    aria-label="Ocultar senha"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    onMouseDown={(e) => e.preventDefault()}
-                    edge="end"
-                  >
-                    {showPassword ? (
-                      <VisibilityOff fontSize="small" />
-                    ) : (
-                      <Visibility fontSize="small" />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              ) : undefined,
+              ...(props.slotProps?.input ?? {}),
+              ...(isPassword && {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      type="button"
+                      aria-label="Ocultar senha"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      onMouseDown={(e) => e.preventDefault()}
+                      edge="end"
+                    >
+                      {showPassword ? (
+                        <VisibilityOff fontSize="small" />
+                      ) : (
+                        <Visibility fontSize="small" />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }),
             },
           }}
           sx={{

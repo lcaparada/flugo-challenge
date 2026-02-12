@@ -1,8 +1,11 @@
+import "dayjs/locale/pt-br";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { theme } from "@/theme/muiTheme";
 import CreateCollaborator from "../CreateCollaborator";
@@ -32,9 +35,11 @@ function renderCreateCollaborator() {
   return render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          <CreateCollaborator />
-        </BrowserRouter>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+          <BrowserRouter>
+            <CreateCollaborator />
+          </BrowserRouter>
+        </LocalizationProvider>
       </ThemeProvider>
     </QueryClientProvider>,
   );
