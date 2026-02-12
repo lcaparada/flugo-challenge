@@ -1,15 +1,26 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { InfiniteData } from "@tanstack/react-query";
-import { collaboratorsService, type PaginatedResult } from "@/services";
+import {
+  collaboratorsService,
+  departmentsService,
+  type PaginatedResult,
+} from "@/services";
 import type { Collaborator } from "@/types/collaborator";
 import { QueryKeys } from "@/infra";
+
+export type CreateCollaboratorParams = Omit<Collaborator, "id">;
 
 export function useCreateCollaborator() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: Omit<Collaborator, "id">) =>
-      collaboratorsService.create(data),
+    mutationFn: async (data: Omit<Collaborator, "id">) => {
+      const newId = await collaboratorsService.create(data);
+      if (data.department) {
+        await departmentsService.addCollaborator(data.department, newId);
+      }
+      return newId;
+    },
     onSuccess: (newId, variables) => {
       const newCollaborator: Collaborator = { id: newId, ...variables };
 
@@ -27,6 +38,9 @@ export function useCreateCollaborator() {
           };
         },
       );
+      if (variables.department) {
+        queryClient.invalidateQueries({ queryKey: [QueryKeys.GetAllDepartments] });
+      }
     },
   });
 }

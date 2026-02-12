@@ -19,8 +19,7 @@ import {
   Loading,
   PageHeader,
 } from "@/components";
-import { useGetAllCollaborators } from "@/useCases";
-import { departmentOptions } from "@/constants";
+import { useGetAllCollaborators, useGetAllDepartments } from "@/useCases";
 import type { Collaborator } from "@/types/collaborator";
 
 const MotionBox = motion(Box);
@@ -56,6 +55,18 @@ export default function Home() {
     hasNextPage,
     isFetchingNextPage,
   } = useGetAllCollaborators();
+  const { departments } = useGetAllDepartments();
+
+  const departmentOptionsFromApi = useMemo(
+    () => departments.map((d) => ({ value: d.id, label: d.name })),
+    [departments],
+  );
+  const departmentMap = useMemo(
+    () => Object.fromEntries(departments.map((d) => [d.id, d.name])),
+    [departments],
+  );
+  const filterDepartmentOptions =
+    departmentOptionsFromApi.length > 0 ? departmentOptionsFromApi : [];
 
   const filteredCollaborators = useMemo(
     () =>
@@ -216,7 +227,7 @@ export default function Home() {
               aria-label="Filtrar por departamento"
             >
               <MenuItem value="">Todos</MenuItem>
-              {departmentOptions.map((opt) => (
+              {filterDepartmentOptions.map((opt) => (
                 <MenuItem key={opt.value} value={opt.value}>
                   {opt.label}
                 </MenuItem>
@@ -269,6 +280,7 @@ export default function Home() {
         ) : (
           <CollaboratorsList
             collaborators={filteredCollaborators}
+            departmentMap={departmentMap}
             emptyStateAction={{
               label: "Novo Colaborador",
               onClick: () => navigate("/colaboradores/novo"),

@@ -4,6 +4,7 @@ import { collaboratorsService } from "../collaborators.service";
 import type { Collaborator } from "@/types/collaborator";
 
 const mockGetDocs = vi.fn();
+const mockGetDoc = vi.fn();
 const mockAddDoc = vi.fn();
 const mockUpdateDoc = vi.fn();
 const mockDeleteDoc = vi.fn();
@@ -27,6 +28,7 @@ vi.mock("firebase/firestore", () => ({
     _where: [field, op, value],
   })),
   getDocs: (...args: unknown[]) => mockGetDocs(...args),
+  getDoc: (...args: unknown[]) => mockGetDoc(...args),
   addDoc: (...args: unknown[]) => mockAddDoc(...args),
   updateDoc: (...args: unknown[]) => mockUpdateDoc(...args),
   deleteDoc: (...args: unknown[]) => mockDeleteDoc(...args),
@@ -207,6 +209,59 @@ describe("collaboratorsService", () => {
       const result = await collaboratorsService.getAllManagers();
 
       expect(result.map((c) => c.name)).toEqual(["Ana", "Zelda"]);
+    });
+  });
+
+  describe("getById", () => {
+    it("returns collaborator when document exists", async () => {
+      const mockSnapshot = {
+        exists: () => true,
+        id: "colab-1",
+        data: () => ({
+          name: "Maria",
+          email: "maria@x.com",
+          department: "d1",
+          isActive: true,
+          occupation: "Dev",
+          startDate: "2024-01-01",
+          level: "junior",
+          managerId: "",
+        }),
+      };
+      mockGetDoc.mockResolvedValueOnce(mockSnapshot);
+
+      const result = await collaboratorsService.getById("colab-1");
+
+      expect(result).toEqual({
+        id: "colab-1",
+        name: "Maria",
+        email: "maria@x.com",
+        department: "d1",
+        isActive: true,
+        occupation: "Dev",
+        startDate: "2024-01-01",
+        level: "junior",
+        managerId: "",
+      });
+      expect(mockGetDoc).toHaveBeenCalledTimes(1);
+    });
+
+    it("returns null when document does not exist", async () => {
+      mockGetDoc.mockResolvedValueOnce({ exists: () => false });
+
+      const result = await collaboratorsService.getById("inexistente");
+
+      expect(result).toBeNull();
+      expect(mockGetDoc).toHaveBeenCalledTimes(1);
+    });
+
+    it("calls getDoc with correct doc ref", async () => {
+      mockGetDoc.mockResolvedValueOnce({ exists: () => false });
+      const { doc } = await import("firebase/firestore");
+
+      await collaboratorsService.getById("my-id");
+
+      expect(doc).toHaveBeenCalledWith(expect.anything(), "collaborators", "my-id");
     });
   });
 

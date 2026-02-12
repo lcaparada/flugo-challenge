@@ -1,14 +1,16 @@
 // UI Components
 export * from "./ui/Sidebar";
+export * from "./ui/Loading";
+export * from "./ui/EmptyState";
 export * from "./ui/MenuButton";
 export * from "./ui/PageHeader";
 export * from "./ui/SidebarLogo";
-export * from "./ui/SidebarNavItem";
-export * from "./ui/CollaboratorsList";
-export * from "./ui/EditCollaboratorModal";
-export * from "./ui/Loading";
 export * from "./ui/ErrorMessage";
-export * from "./ui/EmptyState";
+export * from "./ui/SidebarNavItem";
+export * from "./ui/DepartmentsList";
+export * from "./ui/CollaboratorsList";
+export * from "./ui/DepartmentFormModal";
+export * from "./ui/EditCollaboratorModal";
 
 // Layout / Auth
 export * from "./ProtectedRoute";

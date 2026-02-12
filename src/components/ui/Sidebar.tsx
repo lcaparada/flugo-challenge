@@ -1,4 +1,4 @@
-import { AccountBox, Close, Logout } from "@mui/icons-material";
+import { AccountBox, Business, Close, Logout } from "@mui/icons-material";
 import { Box, IconButton, Button } from "@mui/material";
 import { motion, AnimatePresence } from "motion/react";
 import { useMediaQuery, useTheme } from "@mui/material";
@@ -92,6 +92,11 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           to="/"
           label="Colaboradores"
           icon={<AccountBox sx={{ color: "text.secondary" }} />}
+        />
+        <SidebarNavItem
+          to="/departamentos"
+          label="Departamentos"
+          icon={<Business sx={{ color: "text.secondary" }} />}
         />
         <Box sx={{ mt: "auto", pt: 2 }}>
           <Button

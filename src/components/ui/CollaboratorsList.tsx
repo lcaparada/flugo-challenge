@@ -23,12 +23,13 @@ import { stringAvatar } from "@/utils/avatar";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { EditCollaboratorModal } from "@/components/ui/EditCollaboratorModal";
 import type { Collaborator } from "@/types/collaborator";
-import { departmentOptions, levelOptions } from "@/constants";
+import { levelOptions } from "@/constants";
 import { useDeleteCollaborators } from "@/useCases";
 import dayjs from "dayjs";
 
 type CollaboratorsListProps = {
   collaborators: Collaborator[];
+  departmentMap?: Record<string, string>;
   emptyStateAction?: {
     label: string;
     onClick: () => void;
@@ -81,6 +82,7 @@ const headCells: readonly HeadCell[] = [
 
 export function CollaboratorsList({
   collaborators,
+  departmentMap,
   emptyStateAction,
 }: CollaboratorsListProps) {
   const [order, setOrder] = useState<Order>("asc");
@@ -234,57 +236,57 @@ export function CollaboratorsList({
                 />
               </TableCell>
               {headCells.map((headCell) => (
-              <TableCell
-                key={headCell.id}
-                sx={{
-                  fontWeight: 600,
-                  color: "grey.500",
-                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                  px: { xs: 1, sm: 2 },
-                  py: { xs: 1.5, sm: 2 },
-                }}
-                sortDirection={orderBy === headCell.id ? order : false}
-              >
-                {headCell.sortable ? (
-                  <TableSortLabel
-                    active={orderBy === headCell.id}
-                    direction={orderBy === headCell.id ? order : "asc"}
-                    onClick={() => handleRequestSort(headCell.id)}
-                    hideSortIcon={false}
-                    aria-label={`Ordenar por ${headCell.label}`}
-                    sx={{
-                      "& .MuiTableSortLabel-icon": {
-                        opacity: orderBy === headCell.id ? 1 : 0.3,
-                      },
-                    }}
-                  >
-                    {headCell.label}
-                    {orderBy === headCell.id ? (
-                      <Box
-                        component="span"
-                        sx={{
-                          border: 0,
-                          clip: "rect(0 0 0 0)",
-                          height: "1px",
-                          margin: -1,
-                          overflow: "hidden",
-                          padding: 0,
-                          position: "absolute",
-                          whiteSpace: "nowrap",
-                          width: "1px",
-                        }}
-                      >
-                        {order === "desc"
-                          ? "sorted descending"
-                          : "sorted ascending"}
-                      </Box>
-                    ) : null}
-                  </TableSortLabel>
-                ) : (
-                  headCell.label
-                )}
-              </TableCell>
-            ))}
+                <TableCell
+                  key={headCell.id}
+                  sx={{
+                    fontWeight: 600,
+                    color: "grey.500",
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                    px: { xs: 1, sm: 2 },
+                    py: { xs: 1.5, sm: 2 },
+                  }}
+                  sortDirection={orderBy === headCell.id ? order : false}
+                >
+                  {headCell.sortable ? (
+                    <TableSortLabel
+                      active={orderBy === headCell.id}
+                      direction={orderBy === headCell.id ? order : "asc"}
+                      onClick={() => handleRequestSort(headCell.id)}
+                      hideSortIcon={false}
+                      aria-label={`Ordenar por ${headCell.label}`}
+                      sx={{
+                        "& .MuiTableSortLabel-icon": {
+                          opacity: orderBy === headCell.id ? 1 : 0.3,
+                        },
+                      }}
+                    >
+                      {headCell.label}
+                      {orderBy === headCell.id ? (
+                        <Box
+                          component="span"
+                          sx={{
+                            border: 0,
+                            clip: "rect(0 0 0 0)",
+                            height: "1px",
+                            margin: -1,
+                            overflow: "hidden",
+                            padding: 0,
+                            position: "absolute",
+                            whiteSpace: "nowrap",
+                            width: "1px",
+                          }}
+                        >
+                          {order === "desc"
+                            ? "sorted descending"
+                            : "sorted ascending"}
+                        </Box>
+                      ) : null}
+                    </TableSortLabel>
+                  ) : (
+                    headCell.label
+                  )}
+                </TableCell>
+              ))}
               <TableCell
                 sx={{
                   fontWeight: 600,
@@ -317,161 +319,162 @@ export function CollaboratorsList({
                     size="small"
                   />
                 </TableCell>
-                <TableCell sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1.5, sm: 2 } }}>
-                <Box
+                <TableCell
+                  sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1.5, sm: 2 } }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: { xs: 1, sm: 1.5 },
+                    }}
+                  >
+                    <Avatar
+                      {...stringAvatar(collaborator.name)}
+                      alt={collaborator.name}
+                      sx={{
+                        ...stringAvatar(collaborator.name).sx,
+                        width: { xs: 28, sm: 32 },
+                        height: { xs: 28, sm: 32 },
+                        fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                      }}
+                    />
+                    <span style={{ fontWeight: 500, fontSize: "inherit" }}>
+                      {collaborator.name}
+                    </span>
+                  </Box>
+                </TableCell>
+                <TableCell
                   sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: { xs: 1, sm: 1.5 },
+                    color: "grey.500",
+                    px: { xs: 1, sm: 2 },
+                    py: { xs: 1.5, sm: 2 },
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
                   }}
                 >
-                  <Avatar
-                    {...stringAvatar(collaborator.name)}
-                    alt={collaborator.name}
+                  {collaborator.email}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color: "grey.500",
+                    px: { xs: 1, sm: 2 },
+                    py: { xs: 1.5, sm: 2 },
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                  }}
+                >
+                  {departmentMap?.[collaborator.department] ?? "—"}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color: "grey.500",
+                    px: { xs: 1, sm: 2 },
+                    py: { xs: 1.5, sm: 2 },
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                  }}
+                >
+                  {collaborator.occupation || "—"}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color: "grey.500",
+                    px: { xs: 1, sm: 2 },
+                    py: { xs: 1.5, sm: 2 },
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                  }}
+                >
+                  {levelOptions.find(
+                    (option) => option.value === collaborator.level,
+                  )?.label ?? "—"}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color: "grey.500",
+                    px: { xs: 1, sm: 2 },
+                    py: { xs: 1.5, sm: 2 },
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                  }}
+                >
+                  {collaborator.startDate
+                    ? dayjs(collaborator.startDate).format("DD/MM/YYYY")
+                    : "—"}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color: "grey.500",
+                    px: { xs: 1, sm: 2 },
+                    py: { xs: 1.5, sm: 2 },
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                  }}
+                >
+                  {collaborator.managerId
+                    ? (collaborators.find(
+                        (c) => c.id === collaborator.managerId,
+                      )?.name ?? "—")
+                    : "—"}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color: "grey.500",
+                    px: { xs: 1, sm: 2 },
+                    py: { xs: 1.5, sm: 2 },
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                  }}
+                >
+                  {collaborator.baseSalary != null
+                    ? new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(collaborator.baseSalary)
+                    : "—"}
+                </TableCell>
+                <TableCell
+                  sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1.5, sm: 2 } }}
+                >
+                  <Chip
+                    label={collaborator.isActive ? "Ativo" : "Inativo"}
+                    size="small"
                     sx={{
-                      ...stringAvatar(collaborator.name).sx,
-                      width: { xs: 28, sm: 32 },
-                      height: { xs: 28, sm: 32 },
-                      fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                      fontWeight: 500,
+                      fontSize: { xs: "0.625rem", sm: "0.75rem" },
+                      height: { xs: 20, sm: 24 },
+                      backgroundColor: collaborator.isActive
+                        ? "success.light"
+                        : "error.light",
+                      color: collaborator.isActive
+                        ? "success.main"
+                        : "error.main",
+                      border: "none",
                     }}
                   />
-                  <span style={{ fontWeight: 500, fontSize: "inherit" }}>
-                    {collaborator.name}
-                  </span>
-                </Box>
-              </TableCell>
-              <TableCell
-                sx={{
-                  color: "grey.500",
-                  px: { xs: 1, sm: 2 },
-                  py: { xs: 1.5, sm: 2 },
-                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                }}
-              >
-                {collaborator.email}
-              </TableCell>
-              <TableCell
-                sx={{
-                  color: "grey.500",
-                  px: { xs: 1, sm: 2 },
-                  py: { xs: 1.5, sm: 2 },
-                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                }}
-              >
-                {
-                  departmentOptions.find(
-                    (option) => option.value === collaborator.department,
-                  )?.label
-                }
-              </TableCell>
-              <TableCell
-                sx={{
-                  color: "grey.500",
-                  px: { xs: 1, sm: 2 },
-                  py: { xs: 1.5, sm: 2 },
-                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                }}
-              >
-                {collaborator.occupation || "—"}
-              </TableCell>
-              <TableCell
-                sx={{
-                  color: "grey.500",
-                  px: { xs: 1, sm: 2 },
-                  py: { xs: 1.5, sm: 2 },
-                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                }}
-              >
-                {levelOptions.find(
-                  (option) => option.value === collaborator.level,
-                )?.label ?? "—"}
-              </TableCell>
-              <TableCell
-                sx={{
-                  color: "grey.500",
-                  px: { xs: 1, sm: 2 },
-                  py: { xs: 1.5, sm: 2 },
-                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                }}
-              >
-                {collaborator.startDate
-                  ? dayjs(collaborator.startDate).format("DD/MM/YYYY")
-                  : "—"}
-              </TableCell>
-              <TableCell
-                sx={{
-                  color: "grey.500",
-                  px: { xs: 1, sm: 2 },
-                  py: { xs: 1.5, sm: 2 },
-                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                }}
-              >
-                {collaborator.managerId
-                  ? (collaborators.find((c) => c.id === collaborator.managerId)
-                      ?.name ?? "—")
-                  : "—"}
-              </TableCell>
-              <TableCell
-                sx={{
-                  color: "grey.500",
-                  px: { xs: 1, sm: 2 },
-                  py: { xs: 1.5, sm: 2 },
-                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                }}
-              >
-                {collaborator.baseSalary != null
-                  ? new Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(collaborator.baseSalary)
-                  : "—"}
-              </TableCell>
-              <TableCell sx={{ px: { xs: 1, sm: 2 }, py: { xs: 1.5, sm: 2 } }}>
-                <Chip
-                  label={collaborator.isActive ? "Ativo" : "Inativo"}
-                  size="small"
+                </TableCell>
+                <TableCell
                   sx={{
-                    fontWeight: 500,
-                    fontSize: { xs: "0.625rem", sm: "0.75rem" },
-                    height: { xs: 20, sm: 24 },
-                    backgroundColor: collaborator.isActive
-                      ? "success.light"
-                      : "error.light",
-                    color: collaborator.isActive
-                      ? "success.main"
-                      : "error.main",
-                    border: "none",
+                    px: { xs: 1, sm: 2 },
+                    py: { xs: 1.5, sm: 2 },
+                    width: 120,
                   }}
-                />
-              </TableCell>
-              <TableCell
-                sx={{
-                  px: { xs: 1, sm: 2 },
-                  py: { xs: 1.5, sm: 2 },
-                  width: 120,
-                }}
-              >
-                <Box sx={{ display: "flex", gap: 0.5 }}>
-                  <IconButton
-                    size="small"
-                    onClick={() => setCollaboratorToEdit(collaborator)}
-                    aria-label={`Editar ${collaborator.name}`}
-                    color="primary"
-                  >
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleDeleteClick(collaborator)}
-                    aria-label={`Excluir ${collaborator.name}`}
-                    color="error"
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Box>
-              </TableCell>
-            </TableRow>
-          ))}
+                >
+                  <Box sx={{ display: "flex", gap: 0.5 }}>
+                    <IconButton
+                      size="small"
+                      onClick={() => setCollaboratorToEdit(collaborator)}
+                      aria-label={`Editar ${collaborator.name}`}
+                      color="primary"
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleDeleteClick(collaborator)}
+                      aria-label={`Excluir ${collaborator.name}`}
+                      color="error"
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -480,7 +483,7 @@ export function CollaboratorsList({
         open={deleteConfirm !== null}
         onClose={() => setDeleteConfirm(null)}
         aria-labelledby="delete-dialog-title"
-        PaperProps={{ sx: { borderRadius: 2 } }}
+        slotProps={{ paper: { sx: { borderRadius: 2 } } }}
       >
         <DialogTitle id="delete-dialog-title">
           {deleteConfirm?.ids.length === 1

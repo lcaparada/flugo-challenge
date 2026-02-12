@@ -8,6 +8,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { theme } from "./theme/muiTheme";
 import Home from "./pages/Home";
 import CreateCollaborator from "./pages/CreateCollaborator";
+import Departments from "./pages/Departments";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
@@ -59,6 +60,7 @@ export default function App() {
                     path="/colaboradores/novo"
                     element={<CreateCollaborator />}
                   />
+                  <Route path="/departamentos" element={<Departments />} />
                 </Route>
               </Route>
               <Route path="*" element={<NotFound />} />

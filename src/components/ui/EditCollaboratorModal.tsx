@@ -21,8 +21,12 @@ import {
   createCollaboratorSchema,
   type CreateCollaboratorSchema,
 } from "@/schemas";
-import { useUpdateCollaborator, useGetAllManagers } from "@/useCases";
-import { departmentOptions, levelOptions } from "@/constants";
+import {
+  useUpdateCollaborator,
+  useGetAllManagers,
+  useGetAllDepartments,
+} from "@/useCases";
+import { levelOptions } from "@/constants";
 import type { Collaborator } from "@/types/collaborator";
 
 type EditCollaboratorModalProps = {
@@ -43,6 +47,12 @@ export function EditCollaboratorModal({
     error,
   } = useUpdateCollaborator();
   const { managers } = useGetAllManagers();
+  const { departments } = useGetAllDepartments();
+
+  const departmentOptionsForSelect = useMemo(
+    () => departments.map((d) => ({ value: d.id, label: d.name })),
+    [departments],
+  );
 
   const {
     control,
@@ -133,6 +143,7 @@ export function EditCollaboratorModal({
         managerId: data.managerId ?? "",
         baseSalary: baseSalaryNum,
       },
+      previousDepartmentId: collaborator.department,
     });
     handleClose();
   };
@@ -183,7 +194,7 @@ export function EditCollaboratorModal({
               name="department"
               control={control}
               label="Departamento"
-              options={departmentOptions}
+              options={departmentOptionsForSelect}
               error={!!errors.department}
               helperText={errors.department?.message}
             />

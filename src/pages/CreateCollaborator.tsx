@@ -27,8 +27,12 @@ import {
   createCollaboratorSchema,
   type CreateCollaboratorSchema,
 } from "@/schemas";
-import { useCreateCollaborator, useGetAllManagers } from "@/useCases";
-import { departmentOptions, levelOptions } from "@/constants";
+import {
+  useCreateCollaborator,
+  useGetAllManagers,
+  useGetAllDepartments,
+} from "@/useCases";
+import { levelOptions } from "@/constants";
 
 const steps = ["Informações Básicas", "Infos Profissionais"];
 
@@ -42,6 +46,7 @@ export default function CreateCollaborator() {
     error,
   } = useCreateCollaborator();
   const { managers } = useGetAllManagers();
+  const { departments } = useGetAllDepartments();
 
   const {
     control,
@@ -61,7 +66,7 @@ export default function CreateCollaborator() {
       managerId: "",
       baseSalary: "",
     },
-    mode: "onSubmit",
+    mode: "onChange",
   });
 
   const level = useWatch({ control, name: "level", defaultValue: "junior" });
@@ -89,6 +94,11 @@ export default function CreateCollaborator() {
       handleSubmit(onSubmit)();
     }
   };
+
+  const departmentOptionsForSelect = useMemo(
+    () => departments.map((d) => ({ value: d.id, label: d.name })),
+    [departments],
+  );
 
   const handleBack = () => {
     if (activeStep > 0) {
@@ -283,7 +293,11 @@ export default function CreateCollaborator() {
                       name="department"
                       control={control}
                       label="Departamento"
-                      options={departmentOptions}
+                      options={
+                        departmentOptionsForSelect.length > 0
+                          ? [...departmentOptionsForSelect]
+                          : [{ value: "", label: "Nenhum" }]
+                      }
                       error={!!errors.department}
                       helperText={errors.department?.message}
                     />

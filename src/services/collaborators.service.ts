@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   query,
   orderBy,
   limit,
@@ -60,6 +61,13 @@ export const collaboratorsService = {
       lastDoc: data[data.length - 1] || null,
       hasMore,
     };
+  },
+
+  async getById(id: string): Promise<Collaborator | null> {
+    const docRef = doc(db, COLLECTION_NAME, id);
+    const snapshot = await getDoc(docRef);
+    if (!snapshot.exists()) return null;
+    return { id: snapshot.id, ...snapshot.data() } as Collaborator;
   },
 
   async getAllManagers(): Promise<Collaborator[]> {
