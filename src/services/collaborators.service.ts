@@ -1,11 +1,15 @@
 import {
   collection,
+  doc,
   query,
   orderBy,
   limit,
   getDocs,
   startAfter,
   addDoc,
+  updateDoc,
+  deleteDoc,
+  writeBatch,
   where,
   type QueryDocumentSnapshot,
   type DocumentData,
@@ -89,5 +93,45 @@ export const collaboratorsService = {
     };
     const docRef = await addDoc(collaboratorsRef, payload);
     return docRef.id;
+  },
+
+  async update(
+    id: string,
+    data: Partial<Omit<Collaborator, "id">>,
+  ): Promise<void> {
+    if (data.email != null) {
+      const collaboratorsRef = collection(db, COLLECTION_NAME);
+      const emailQuery = query(
+        collaboratorsRef,
+        where("email", "==", data.email),
+        limit(2),
+      );
+      const existing = await getDocs(emailQuery);
+      const otherWithSameEmail = existing.docs.find((d) => d.id !== id);
+      if (otherWithSameEmail) {
+        throw createEmailAlreadyExistsError(data.email);
+      }
+    }
+    const docRef = doc(db, COLLECTION_NAME, id);
+    const payload = { ...data } as Record<string, unknown>;
+    if (payload.baseSalary != null) {
+      payload.baseSalary = Number(payload.baseSalary);
+    }
+    await updateDoc(docRef, payload);
+  },
+
+  async delete(id: string): Promise<void> {
+    const docRef = doc(db, COLLECTION_NAME, id);
+    await deleteDoc(docRef);
+  },
+
+  async deleteMany(ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+    const batch = writeBatch(db);
+    for (const id of ids) {
+      const docRef = doc(db, COLLECTION_NAME, id);
+      batch.delete(docRef);
+    }
+    await batch.commit();
   },
 };

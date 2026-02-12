@@ -1,10 +1,21 @@
+import type { ReactElement } from "react";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CollaboratorsList } from "../CollaboratorsList";
 import type { Collaborator } from "@/types/collaborator";
 
-// department deve ser o value de departmentOptions (ex.: "design") para exibir o label na tabela
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+});
+
+function renderWithProviders(ui: ReactElement) {
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>,
+  );
+}
+
 const mockCollaborators: Collaborator[] = [
   {
     id: "1",
@@ -12,6 +23,10 @@ const mockCollaborators: Collaborator[] = [
     email: "ana@example.com",
     department: "engineering",
     isActive: true,
+    occupation: "Dev",
+    startDate: "2024-01-01",
+    level: "junior",
+    managerId: "",
   },
   {
     id: "2",
@@ -19,6 +34,10 @@ const mockCollaborators: Collaborator[] = [
     email: "carlos@example.com",
     department: "marketing",
     isActive: false,
+    occupation: "Designer",
+    startDate: "2024-02-01",
+    level: "pleno",
+    managerId: "",
   },
   {
     id: "3",
@@ -26,12 +45,18 @@ const mockCollaborators: Collaborator[] = [
     email: "beatriz@example.com",
     department: "design",
     isActive: true,
+    occupation: "Manager",
+    startDate: "2024-03-01",
+    level: "senior",
+    managerId: "",
   },
 ];
 
 describe("CollaboratorsList", () => {
   it("renders the table with headers", () => {
-    render(<CollaboratorsList collaborators={mockCollaborators} />);
+    renderWithProviders(
+      <CollaboratorsList collaborators={mockCollaborators} />,
+    );
 
     expect(screen.getByText("Nome")).toBeInTheDocument();
     expect(screen.getByText("Email")).toBeInTheDocument();
@@ -40,7 +65,9 @@ describe("CollaboratorsList", () => {
   });
 
   it("renders all collaborators data", () => {
-    render(<CollaboratorsList collaborators={mockCollaborators} />);
+    renderWithProviders(
+      <CollaboratorsList collaborators={mockCollaborators} />,
+    );
 
     expect(screen.getByText("Ana Silva")).toBeInTheDocument();
     expect(screen.getByText("ana@example.com")).toBeInTheDocument();
@@ -56,7 +83,9 @@ describe("CollaboratorsList", () => {
   });
 
   it("displays active and inactive status correctly", () => {
-    render(<CollaboratorsList collaborators={mockCollaborators} />);
+    renderWithProviders(
+      <CollaboratorsList collaborators={mockCollaborators} />,
+    );
 
     const activeChips = screen.getAllByText("Ativo");
     const inactiveChips = screen.getAllByText("Inativo");
@@ -66,7 +95,7 @@ describe("CollaboratorsList", () => {
   });
 
   it("renders empty state when no collaborators", () => {
-    render(<CollaboratorsList collaborators={[]} />);
+    renderWithProviders(<CollaboratorsList collaborators={[]} />);
 
     expect(
       screen.getByRole("status", { name: /nenhum colaborador cadastrado/i }),
@@ -79,7 +108,7 @@ describe("CollaboratorsList", () => {
 
   it("renders empty state with action button when emptyStateAction is provided", async () => {
     const onAction = vi.fn();
-    render(
+    renderWithProviders(
       <CollaboratorsList
         collaborators={[]}
         emptyStateAction={{ label: "Novo Colaborador", onClick: onAction }}
@@ -94,12 +123,15 @@ describe("CollaboratorsList", () => {
 
   it("sorts by name when clicking name header", async () => {
     const user = userEvent.setup();
-    render(<CollaboratorsList collaborators={mockCollaborators} />);
+    renderWithProviders(
+      <CollaboratorsList collaborators={mockCollaborators} />,
+    );
 
     let rows = screen.getAllByRole("row");
     let firstDataRow = rows[1];
     let firstRowCells = within(firstDataRow).getAllByRole("cell");
-    expect(firstRowCells[0]).toHaveTextContent("Ana Silva");
+    // Col 0 = checkbox, col 1 = name
+    expect(firstRowCells[1]).toHaveTextContent("Ana Silva");
 
     const nameHeader = screen.getByText("Nome");
     await user.click(nameHeader);
@@ -107,36 +139,40 @@ describe("CollaboratorsList", () => {
     rows = screen.getAllByRole("row");
     firstDataRow = rows[1];
     firstRowCells = within(firstDataRow).getAllByRole("cell");
-    expect(firstRowCells[0]).toHaveTextContent("Carlos Santos");
+    expect(firstRowCells[1]).toHaveTextContent("Carlos Santos");
   });
 
   it("toggles sort direction when clicking same header twice", async () => {
     const user = userEvent.setup();
-    render(<CollaboratorsList collaborators={mockCollaborators} />);
+    renderWithProviders(
+      <CollaboratorsList collaborators={mockCollaborators} />,
+    );
 
     const nameHeader = screen.getByText("Nome");
 
     let rows = screen.getAllByRole("row");
     let firstDataRow = rows[1];
     let firstRowCells = within(firstDataRow).getAllByRole("cell");
-    expect(firstRowCells[0]).toHaveTextContent("Ana Silva");
+    expect(firstRowCells[1]).toHaveTextContent("Ana Silva");
 
     await user.click(nameHeader);
     rows = screen.getAllByRole("row");
     firstDataRow = rows[1];
     firstRowCells = within(firstDataRow).getAllByRole("cell");
-    expect(firstRowCells[0]).toHaveTextContent("Carlos Santos");
+    expect(firstRowCells[1]).toHaveTextContent("Carlos Santos");
 
     await user.click(nameHeader);
     rows = screen.getAllByRole("row");
     firstDataRow = rows[1];
     firstRowCells = within(firstDataRow).getAllByRole("cell");
-    expect(firstRowCells[0]).toHaveTextContent("Ana Silva");
+    expect(firstRowCells[1]).toHaveTextContent("Ana Silva");
   });
 
   it("sorts by email when clicking email header", async () => {
     const user = userEvent.setup();
-    render(<CollaboratorsList collaborators={mockCollaborators} />);
+    renderWithProviders(
+      <CollaboratorsList collaborators={mockCollaborators} />,
+    );
 
     const emailHeader = screen.getByText("Email");
     await user.click(emailHeader);
@@ -144,13 +180,14 @@ describe("CollaboratorsList", () => {
     const rows = screen.getAllByRole("row");
     const firstDataRow = rows[1];
     const firstRowCells = within(firstDataRow).getAllByRole("cell");
-
-    expect(firstRowCells[1]).toHaveTextContent("ana@example.com");
+    expect(firstRowCells[2]).toHaveTextContent("ana@example.com");
   });
 
   it("sorts by department when clicking department header", async () => {
     const user = userEvent.setup();
-    render(<CollaboratorsList collaborators={mockCollaborators} />);
+    renderWithProviders(
+      <CollaboratorsList collaborators={mockCollaborators} />,
+    );
 
     const departmentHeader = screen.getByText("Departamento");
     await user.click(departmentHeader);
@@ -158,13 +195,14 @@ describe("CollaboratorsList", () => {
     const rows = screen.getAllByRole("row");
     const firstDataRow = rows[1];
     const firstRowCells = within(firstDataRow).getAllByRole("cell");
-
-    expect(firstRowCells[2]).toHaveTextContent("Design");
+    expect(firstRowCells[3]).toHaveTextContent("Design");
   });
 
   it("sorts by status when clicking status header", async () => {
     const user = userEvent.setup();
-    render(<CollaboratorsList collaborators={mockCollaborators} />);
+    renderWithProviders(
+      <CollaboratorsList collaborators={mockCollaborators} />,
+    );
 
     const statusHeader = screen.getByText("Status");
     await user.click(statusHeader);
@@ -172,20 +210,21 @@ describe("CollaboratorsList", () => {
     const rows = screen.getAllByRole("row");
     const firstDataRow = rows[1];
     const cells = within(firstDataRow).getAllByRole("cell");
-    const statusCell = cells[3];
-
+    const statusCell = cells[9];
     expect(statusCell).toHaveTextContent("Inativo");
   });
 
   it("has sort icons on all headers", () => {
-    render(<CollaboratorsList collaborators={mockCollaborators} />);
+    renderWithProviders(
+      <CollaboratorsList collaborators={mockCollaborators} />,
+    );
 
     const sortButtons = screen.getAllByRole("button");
     expect(sortButtons.length).toBeGreaterThanOrEqual(4);
   });
 
   it("applies correct styling to table container", () => {
-    const { container } = render(
+    const { container } = renderWithProviders(
       <CollaboratorsList collaborators={mockCollaborators} />,
     );
 

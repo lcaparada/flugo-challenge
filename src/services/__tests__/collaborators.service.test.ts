@@ -5,6 +5,10 @@ import type { Collaborator } from "@/types/collaborator";
 
 const mockGetDocs = vi.fn();
 const mockAddDoc = vi.fn();
+const mockUpdateDoc = vi.fn();
+const mockDeleteDoc = vi.fn();
+const mockBatchDelete = vi.fn();
+const mockBatchCommit = vi.fn();
 
 vi.mock("@/lib/firebase", () => ({
   db: {},
@@ -12,6 +16,9 @@ vi.mock("@/lib/firebase", () => ({
 
 vi.mock("firebase/firestore", () => ({
   collection: vi.fn((_db: unknown, name: string) => ({ _collection: name })),
+  doc: vi.fn((_db: unknown, coll: string, id: string) => ({
+    _doc: [coll, id],
+  })),
   query: vi.fn((...args: unknown[]) => ({ _query: args })),
   orderBy: vi.fn((field: string) => ({ _orderBy: field })),
   limit: vi.fn((n: number) => ({ _limit: n })),
@@ -21,6 +28,12 @@ vi.mock("firebase/firestore", () => ({
   })),
   getDocs: (...args: unknown[]) => mockGetDocs(...args),
   addDoc: (...args: unknown[]) => mockAddDoc(...args),
+  updateDoc: (...args: unknown[]) => mockUpdateDoc(...args),
+  deleteDoc: (...args: unknown[]) => mockDeleteDoc(...args),
+  writeBatch: vi.fn(() => ({
+    delete: (...args: unknown[]) => mockBatchDelete(...args),
+    commit: () => mockBatchCommit(),
+  })),
 }));
 
 function createMockDoc(
@@ -300,6 +313,158 @@ describe("collaboratorsService", () => {
         expect((e as Error & { email: string }).email).toBe("duplicado@x.com");
         expect((e as Error).message).toMatch(/já está cadastrado/);
       }
+    });
+  });
+
+  describe("update", () => {
+    it("calls updateDoc with correct doc ref and payload", async () => {
+      mockGetDocs.mockResolvedValueOnce({ docs: [], empty: true });
+      mockUpdateDoc.mockResolvedValueOnce(undefined);
+
+      await collaboratorsService.update("doc-123", {
+        name: "Nome Atualizado",
+        email: "novo@x.com",
+      });
+
+      const { doc } = await import("firebase/firestore");
+      expect(doc).toHaveBeenCalledWith(expect.anything(), "collaborators", "doc-123");
+      expect(mockUpdateDoc).toHaveBeenCalledTimes(1);
+      expect(mockUpdateDoc).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          name: "Nome Atualizado",
+          email: "novo@x.com",
+        }),
+      );
+    });
+
+    it("does not call getDocs when data.email is not provided", async () => {
+      mockUpdateDoc.mockResolvedValueOnce(undefined);
+
+      await collaboratorsService.update("doc-123", {
+        name: "Só nome",
+      });
+
+      expect(mockGetDocs).not.toHaveBeenCalled();
+      expect(mockUpdateDoc).toHaveBeenCalledTimes(1);
+    });
+
+    it("checks email uniqueness when data.email is provided", async () => {
+      const otherDoc = createMockDoc("other-id", {
+        name: "Outro",
+        email: "ocupado@x.com",
+        department: "TI",
+        isActive: true,
+      });
+      mockGetDocs.mockResolvedValueOnce({
+        docs: [
+          { id: "doc-123", data: () => ({ email: "ocupado@x.com" }) },
+          otherDoc,
+        ],
+        empty: false,
+      });
+
+      await expect(
+        collaboratorsService.update("doc-123", {
+          email: "ocupado@x.com",
+        }),
+      ).rejects.toThrow(/já está cadastrado/);
+
+      expect(mockUpdateDoc).not.toHaveBeenCalled();
+    });
+
+    it("does not throw when email belongs to the same document being updated", async () => {
+      mockGetDocs.mockResolvedValueOnce({
+        docs: [
+          {
+            id: "doc-123",
+            data: () => ({
+              name: "João",
+              email: "joao@x.com",
+              department: "TI",
+              isActive: true,
+            }),
+          },
+        ],
+        empty: false,
+      });
+      mockUpdateDoc.mockResolvedValueOnce(undefined);
+
+      await collaboratorsService.update("doc-123", {
+        name: "João Silva",
+        email: "joao@x.com",
+      });
+
+      expect(mockUpdateDoc).toHaveBeenCalledTimes(1);
+    });
+
+    it("converts baseSalary to number when provided", async () => {
+      mockUpdateDoc.mockResolvedValueOnce(undefined);
+
+      await collaboratorsService.update("doc-123", {
+        baseSalary: 7500.5,
+      });
+
+      expect(mockUpdateDoc).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ baseSalary: 7500.5 }),
+      );
+    });
+  });
+
+  describe("delete", () => {
+    it("calls deleteDoc with correct doc ref", async () => {
+      mockDeleteDoc.mockResolvedValueOnce(undefined);
+
+      await collaboratorsService.delete("doc-to-delete");
+
+      const { doc } = await import("firebase/firestore");
+      expect(doc).toHaveBeenCalledWith(
+        expect.anything(),
+        "collaborators",
+        "doc-to-delete",
+      );
+      expect(mockDeleteDoc).toHaveBeenCalledTimes(1);
+    });
+
+    it("resolves when deleteDoc succeeds", async () => {
+      mockDeleteDoc.mockResolvedValueOnce(undefined);
+
+      await expect(collaboratorsService.delete("any-id")).resolves.toBeUndefined();
+    });
+  });
+
+  describe("deleteMany", () => {
+    it("does not call writeBatch or commit when ids is empty", async () => {
+      const { writeBatch } = await import("firebase/firestore");
+
+      await collaboratorsService.deleteMany([]);
+
+      expect(writeBatch).not.toHaveBeenCalled();
+      expect(mockBatchDelete).not.toHaveBeenCalled();
+      expect(mockBatchCommit).not.toHaveBeenCalled();
+    });
+
+    it("calls batch.delete for each id and batch.commit when ids provided", async () => {
+      mockBatchCommit.mockResolvedValueOnce(undefined);
+      const { writeBatch, doc } = await import("firebase/firestore");
+
+      await collaboratorsService.deleteMany(["id1", "id2", "id3"]);
+
+      expect(writeBatch).toHaveBeenCalledTimes(1);
+      expect(mockBatchDelete).toHaveBeenCalledTimes(3);
+      expect(doc).toHaveBeenCalledWith(expect.anything(), "collaborators", "id1");
+      expect(doc).toHaveBeenCalledWith(expect.anything(), "collaborators", "id2");
+      expect(doc).toHaveBeenCalledWith(expect.anything(), "collaborators", "id3");
+      expect(mockBatchCommit).toHaveBeenCalledTimes(1);
+    });
+
+    it("resolves when batch.commit succeeds", async () => {
+      mockBatchCommit.mockResolvedValueOnce(undefined);
+
+      await expect(
+        collaboratorsService.deleteMany(["a", "b"]),
+      ).resolves.toBeUndefined();
     });
   });
 });
