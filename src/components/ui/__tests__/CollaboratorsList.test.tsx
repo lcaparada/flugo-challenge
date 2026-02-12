@@ -52,6 +52,12 @@ const mockCollaborators: Collaborator[] = [
   },
 ];
 
+const mockDepartmentMap: Record<string, string> = {
+  engineering: "Engenharia",
+  marketing: "Marketing",
+  design: "Design",
+};
+
 describe("CollaboratorsList", () => {
   it("renders the table with headers", () => {
     renderWithProviders(
@@ -66,7 +72,10 @@ describe("CollaboratorsList", () => {
 
   it("renders all collaborators data", () => {
     renderWithProviders(
-      <CollaboratorsList collaborators={mockCollaborators} />,
+      <CollaboratorsList
+        collaborators={mockCollaborators}
+        departmentMap={mockDepartmentMap}
+      />,
     );
 
     expect(screen.getByText("Ana Silva")).toBeInTheDocument();
@@ -186,7 +195,10 @@ describe("CollaboratorsList", () => {
   it("sorts by department when clicking department header", async () => {
     const user = userEvent.setup();
     renderWithProviders(
-      <CollaboratorsList collaborators={mockCollaborators} />,
+      <CollaboratorsList
+        collaborators={mockCollaborators}
+        departmentMap={mockDepartmentMap}
+      />,
     );
 
     const departmentHeader = screen.getByText("Departamento");

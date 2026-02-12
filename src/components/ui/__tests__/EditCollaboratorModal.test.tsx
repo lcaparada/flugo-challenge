@@ -18,15 +18,25 @@ const defaultUpdateReturn = {
   error: null as Error | null,
 };
 
-vi.mock("@/useCases", () => ({
-  useUpdateCollaborator: () => ({ ...defaultUpdateReturn }),
-  useGetAllManagers: () => ({
-    managers: [
-      { id: "m1", name: "Gestor Um", level: "gestor" },
-      { id: "m2", name: "Gestor Dois", level: "gestor" },
-    ] as Collaborator[],
-  }),
-}));
+vi.mock("@/useCases", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/useCases")>();
+  return {
+    ...actual,
+    useUpdateCollaborator: () => ({ ...defaultUpdateReturn }),
+    useGetAllManagers: () => ({
+      managers: [
+        { id: "m1", name: "Gestor Um", level: "gestor" },
+        { id: "m2", name: "Gestor Dois", level: "gestor" },
+      ] as Collaborator[],
+    }),
+    useGetAllDepartments: () => ({
+      departments: [
+        { id: "engineering", name: "Engenharia", collaboratorIds: [], managerId: "" },
+        { id: "marketing", name: "Marketing", collaboratorIds: [], managerId: "" },
+      ],
+    }),
+  };
+});
 
 const defaultCollaborator: Collaborator = {
   id: "c1",
@@ -160,6 +170,7 @@ describe("EditCollaboratorModal", () => {
           managerId: "m1",
           baseSalary: 5000,
         }),
+        previousDepartmentId: "engineering",
       });
     });
     await waitFor(() => {

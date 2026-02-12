@@ -17,33 +17,35 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-vi.mock("@/useCases", () => ({
-  useGetAllCollaborators: () => {
-    const collaborators = [
-      {
-        id: "1",
-        name: "Test User",
-        email: "test@example.com",
-        department: "engineering",
-        isActive: true,
-        occupation: "Dev",
-        startDate: "2024-01-01",
-        level: "junior",
-        managerId: "",
-      },
-      {
-        id: "2",
-        name: "Ana Silva",
-        email: "ana@example.com",
-        department: "marketing",
-        isActive: false,
-        occupation: "Designer",
-        startDate: "2024-02-01",
-        level: "pleno",
-        managerId: "",
-      },
-    ];
-    return {
+vi.mock("@/useCases", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/useCases")>();
+  const collaborators = [
+    {
+      id: "1",
+      name: "Test User",
+      email: "test@example.com",
+      department: "engineering",
+      isActive: true,
+      occupation: "Dev",
+      startDate: "2024-01-01",
+      level: "junior",
+      managerId: "",
+    },
+    {
+      id: "2",
+      name: "Ana Silva",
+      email: "ana@example.com",
+      department: "marketing",
+      isActive: false,
+      occupation: "Designer",
+      startDate: "2024-02-01",
+      level: "pleno",
+      managerId: "",
+    },
+  ];
+  return {
+    ...actual,
+    useGetAllCollaborators: () => ({
       data: {
         pages: [{ data: collaborators, lastDoc: null, hasMore: false }],
       },
@@ -54,9 +56,19 @@ vi.mock("@/useCases", () => ({
       fetchNextPage: vi.fn(),
       hasNextPage: false,
       isFetchingNextPage: false,
-    };
-  },
-}));
+    }),
+    useGetAllDepartments: () => ({
+      departments: [
+        { id: "engineering", name: "Engenharia", collaboratorIds: [], managerId: "" },
+        { id: "marketing", name: "Marketing", collaboratorIds: [], managerId: "" },
+        { id: "design", name: "Design", collaboratorIds: [], managerId: "" },
+      ],
+      isLoading: false,
+      isError: false,
+      error: null,
+    }),
+  };
+});
 
 vi.mock("@/components", () => ({
   CollaboratorsList: ({ collaborators }: { collaborators: unknown[] }) => (
