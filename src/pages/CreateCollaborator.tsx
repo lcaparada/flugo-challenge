@@ -84,7 +84,10 @@ export default function CreateCollaborator() {
         ? ["name", "email", "isActive"]
         : ["department", "occupation", "startDate", "level", "baseSalary"];
 
-    const isValid = await trigger(fieldsToValidate);
+    const isValid =
+      activeStep < steps.length - 1
+        ? await trigger(fieldsToValidate)
+        : await trigger();
 
     if (!isValid) return;
 
